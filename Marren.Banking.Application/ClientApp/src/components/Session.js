@@ -78,9 +78,9 @@ class Session {
         let result = await this.handleResponse(response);
 
         if (result.ok) {
-            localStorage.setItem('account_id', result.id);
-            localStorage.setItem('name', result.name);
-            localStorage.setItem('token', result.token);
+            localStorage.setItem('account_id', result.data.id);
+            localStorage.setItem('name', result.data.name);
+            localStorage.setItem('token', result.data.token);
         }
 
         return result;

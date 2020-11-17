@@ -66,9 +66,9 @@ export class Register extends Component {
     
     console.log(result);
     if (!result.ok) {
-      if (result.validationErrors && result.validationErrors.length) {
+      if (result.errors && result.errors.length) {
         const errors = {};
-        result.validationErrors.forEach(x=>{
+        result.errors.forEach(x=>{
           errors[x.id] = x.message;
         });
         register.errors = errors;
@@ -78,7 +78,7 @@ export class Register extends Component {
       }
     }
 
-    this.setState({ accountId: result.id});
+    this.setState({ accountId: result.data.id});
   }
 
   render() {
