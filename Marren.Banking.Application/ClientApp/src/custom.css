@@ -1,0 +1,67 @@
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+code {
+  color: #E01A76;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.marren-container {
+  max-width: 500px;
+  margin: auto;
+  margin-top: 15px;
+}
+
+BODY {
+  color: white;
+  background: #2e1e47;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2e1e47, #853fbe);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2e1e47, #853fbe); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.input-title .input-group-text {
+  width: 140px;
+  text-align: right;
+  display: block;
+}
+
+.register-field:first {
+  margin-top: 10px;
+}
+
+.register-field {
+  margin-bottom: 5px;
+}
+
+.title {
+  color: white;
+}
+
+.statement {
+  width: 100%;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.statement h3 {
+  color: black;
+}
+
+.float-rigth {
+  float: right;
+}
+
+.statement-msg {
+  color: black;
+}
+
+
+

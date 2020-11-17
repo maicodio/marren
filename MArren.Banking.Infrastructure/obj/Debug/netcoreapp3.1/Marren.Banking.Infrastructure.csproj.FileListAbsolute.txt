@@ -1,0 +1,12 @@
+D:\Marren\MArren.Banking.Infrastructure\bin\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.deps.json
+D:\Marren\MArren.Banking.Infrastructure\bin\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.dll
+D:\Marren\MArren.Banking.Infrastructure\bin\Debug\netcoreapp3.1\Marren.Banking.Domain.dll
+D:\Marren\MArren.Banking.Infrastructure\bin\Debug\netcoreapp3.1\Marren.Banking.Domain.pdb
+D:\Marren\MArren.Banking.Infrastructure\obj\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.csprojAssemblyReference.cache
+D:\Marren\MArren.Banking.Infrastructure\obj\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.AssemblyInfoInputs.cache
+D:\Marren\MArren.Banking.Infrastructure\obj\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.AssemblyInfo.cs
+D:\Marren\MArren.Banking.Infrastructure\obj\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.csproj.CopyComplete
+D:\Marren\MArren.Banking.Infrastructure\bin\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.pdb
+D:\Marren\MArren.Banking.Infrastructure\obj\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.dll
+D:\Marren\MArren.Banking.Infrastructure\obj\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.pdb
+D:\Marren\MArren.Banking.Infrastructure\obj\Debug\netcoreapp3.1\Marren.Banking.Infrastructure.csproj.CoreCompileInputs.cache

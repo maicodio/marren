@@ -1,0 +1,9 @@
+D:\Marren\Marren.Banking.Domain\bin\Release\netcoreapp3.1\Marren.Banking.Domain.deps.json
+D:\Marren\Marren.Banking.Domain\bin\Release\netcoreapp3.1\Marren.Banking.Domain.dll
+D:\Marren\Marren.Banking.Domain\bin\Release\netcoreapp3.1\Marren.Banking.Domain.pdb
+D:\Marren\Marren.Banking.Domain\obj\Release\netcoreapp3.1\Marren.Banking.Domain.csprojAssemblyReference.cache
+D:\Marren\Marren.Banking.Domain\obj\Release\netcoreapp3.1\Marren.Banking.Domain.AssemblyInfoInputs.cache
+D:\Marren\Marren.Banking.Domain\obj\Release\netcoreapp3.1\Marren.Banking.Domain.AssemblyInfo.cs
+D:\Marren\Marren.Banking.Domain\obj\Release\netcoreapp3.1\Marren.Banking.Domain.csproj.CoreCompileInputs.cache
+D:\Marren\Marren.Banking.Domain\obj\Release\netcoreapp3.1\Marren.Banking.Domain.dll
+D:\Marren\Marren.Banking.Domain\obj\Release\netcoreapp3.1\Marren.Banking.Domain.pdb
