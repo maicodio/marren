@@ -68,7 +68,8 @@ export class Home extends Component {
               { value: 2, label: 'Extrato', trigger: 'account-statement' },
               { value: 3, label: 'Depósito', trigger: 'account-deposit' },
               { value: 4, label: 'Saque', trigger: 'account-withdraw' },
-              { value: 5, label: 'Sair', trigger: 'welcome' },
+              { value: 5, label: 'Tranferir', trigger: 'account-transfer' },
+              { value: 6, label: 'Sair', trigger: 'welcome' },
             ],
           },
           {
@@ -89,7 +90,7 @@ export class Home extends Component {
             placeholder: 'Digite o valor do depósito',
             validator: value => {
               if (!/^\s*\-?\s*[0-9]{1,10}(,[0-9]{1,2})?\s*$/g.test(value)) {
-                return 'Não é um número válido.';
+                return 'Não é um valor válido.';
               }
               return true;
             },
@@ -112,8 +113,8 @@ export class Home extends Component {
             user: true,
             placeholder: 'Digite o valor do saque',
             validator: value => {
-              if (isNaN(value)) {
-                return 'Não é um número válido.';
+              if (!/^\s*\-?\s*[0-9]{1,10}(,[0-9]{1,2})?\s*$/g.test(value)) {
+                return 'Não é um valor válido.';
               }
               return true;
             },
@@ -140,6 +141,47 @@ export class Home extends Component {
             asMessage: false,
             waitAction: true,
             component: (<Statement />),
+            trigger: 'account-options'
+          },
+          {
+            id: 'account-transfer',
+            message: 'Ok! Quanto você precisa transferir?',
+            trigger: 'account-transfer-value'
+          },
+          {
+            id: 'account-transfer-value',
+            user: true,
+            placeholder: 'Digite o valor da transferência',
+            validator: value => {
+              if (!/^\s*\-?\s*[0-9]{1,10}(,[0-9]{1,2})?\s*$/g.test(value)) {
+                return 'Não é um valor válido.';
+              }
+              return true;
+            },
+            trigger: 'account-transfer-deposit-account'
+          },
+          {
+            id: 'account-transfer-deposit-account',
+            message: 'Ok! Qual o número da conta de destino?',
+            trigger: 'account-transfer-deposit-account-value'
+          },
+          {
+            id: 'account-transfer-deposit-account-value',
+            user: true,
+            placeholder: 'Digite o número da conta',
+            validator: value => {
+              if (!/^\s*[0-9]{1,10}\s*$/g.test(value)) {
+                return 'Não é um número válido.';
+              }
+              return true;
+            },
+            trigger: 'account-transfer-balance'
+          },
+          {
+            id: 'account-transfer-balance',
+            asMessage: true,
+            waitAction: true,
+            component: (<Withdraw action="transfer" />),
             trigger: 'account-options'
           },
           {

@@ -135,6 +135,33 @@ namespace Marren.Banking.Domain.Services
         }
 
         /// <summary>
+        /// Pagamentos
+        /// </summary>
+        /// <param name="accountId">Número da conta Origem</param>
+        /// <param name="value">Valor</param>
+        /// <param name="password">Senha de confirmação</param>
+        /// <param name="accountIdDeposit">Número da conta de deposito</param>
+        /// <returns>Saldo atualizado assincronamente</returns>
+        public async Task<decimal> Transfer(int accountId, decimal value, string password, int accountIdDeposit)
+        {
+            Account.ValidatePassword(password);
+            Account account = await this.Authorize(accountId, password);
+            Account accountDeposit = await this.repository.GetAccountById(accountIdDeposit) 
+                ?? throw new BankingDomainException("A conta de depósito é inválida."); ;
+
+            Transaction lastTransactionWithdraw = await this.GetLastTransaction(account);
+            Transaction lastTransactionDeposit = await this.GetLastTransaction(accountDeposit);
+
+            foreach (var newTransaction in lastTransactionWithdraw.Transfer(value, lastTransactionDeposit))
+            {
+                await this.repository.AddTransaction(newTransaction);
+            }
+
+            await this.repository.SaveChanges();
+            return lastTransactionWithdraw.NextTransaction.Balance;
+        }
+
+        /// <summary>
         /// Depósito
         /// </summary>
         /// <param name="accountId">Número da conta</param>

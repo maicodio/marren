@@ -126,6 +126,10 @@ class Session {
         return await this.authFetch('withdraw', { ammount, password } );
     }
 
+    async transfer(ammount, password, accountIdDeposit) {
+        return await this.authFetch('transfer', { ammount, password, accountIdDeposit } );
+    }
+
     async getStatement(dias) {
         let date = new Date();
         date.setDate(date.getDate()-dias);

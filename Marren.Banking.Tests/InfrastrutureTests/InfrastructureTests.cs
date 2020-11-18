@@ -162,6 +162,42 @@ namespace Marren.Banking.Tests.InfrastrutureTests
         }
 
         /// <summary>
+        /// Transferência
+        /// </summary>
+        [Test]
+        public void TransferenciaTests()
+        {
+            Account account1 = null;
+            Assert.DoesNotThrowAsync(async () => account1 = await this.accountService.OpenAccount("Maico 1", 90, 0.012m, "AAA", DateTime.Now, 100), "Nao conseguiu abrir conta 1");
+            Assert.IsNotNull(account1, "Não abriu a conta 1");
+            Assert.IsTrue(!account1.IsTransient(), "Não obteve o ID da conta 1");
+
+            Account account2 = null;
+            Assert.DoesNotThrowAsync(async () => account2 = await this.accountService.OpenAccount("Maico 2", 90, 0.012m, "AAA", DateTime.Now, 100), "Nao conseguiu abrir conta 1");
+            Assert.IsNotNull(account1, "Não abriu a conta 2");
+            Assert.IsTrue(!account1.IsTransient(), "Não obteve o ID da conta 2");
+
+            Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(0, -10, null, 0), "Validacao da senha");
+            Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(0, -10, "0", 0), "Validacao da senha");
+            Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(0, -10, "AAAA", 0), "Validacao da conta");
+            
+            Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(account1.Id, 1, "AAA", 0), "Validacao da conta destino");
+            Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(account1.Id, 1, "AAA", account1.Id), "Validacao da mesma conta");
+            Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(account1.Id, -10, "AAA", account2.Id), "Validacao do Valor");
+            Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(account1.Id, 200, "AAA", account2.Id), "Validacao do Saldo da Conta");
+
+            decimal sourceBalance = 0;
+            Assert.DoesNotThrowAsync(async() => sourceBalance = await this.accountService.Transfer(account1.Id, 50, "AAA", account2.Id), "Sucesso na transferencia");
+            Assert.AreEqual(sourceBalance, 50, "Saldo incorreto depois da transferencia na conta 1");
+
+            decimal depositBalance = 0;
+            Assert.DoesNotThrowAsync(async () => depositBalance = await this.accountService.GetBalance(account2.Id), "Validacao do Saldo da Conta");
+            Assert.AreEqual(depositBalance, 150, "Saldo incorreto depois da transferencia na conta 2");
+
+
+        }
+
+        /// <summary>
         /// Sqlite não suporta bem operações ASYNC.
         /// A concorrência no SQLLITE não funciona.
         /// Testar no mysql. Trabalho futuro
@@ -170,7 +206,7 @@ namespace Marren.Banking.Tests.InfrastrutureTests
         /// 
         /// </summary>
         /// <returns></returns>
-        [Test]
+        //[Test]
         public async Task ConcurrencyTest()
         {
             Account account = null;

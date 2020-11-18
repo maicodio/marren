@@ -111,7 +111,7 @@ namespace Marren.Banking.Application.Controllers
                 {
                     Date = d.Date,
                     Balance = d.Balance,
-                    Type = d.Type.Name,
+                    Type = d.Type.Name + (string.IsNullOrWhiteSpace(d.Reference) ? string.Empty : string.Concat(" ", d.Reference)),
                     Value = d.Value
                 }).ToArray());
             }
@@ -147,6 +147,23 @@ namespace Marren.Banking.Application.Controllers
             {
                 var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
                 var balance = await this.service.Withdraw(accountId, data.Ammount, data.Password);
+                return Result.Create(balance);
+            }
+            catch (BankingDomainException ex)
+            {
+                return Result.Create<decimal>(ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("transfer")]
+        [Authorize]
+        public async Task<Result<decimal>> Transfer([FromBody] Transfer data)
+        {
+            try
+            {
+                var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+                var balance = await this.service.Transfer(accountId, data.Ammount, data.Password, data.AccountIdDeposit);
                 return Result.Create(balance);
             }
             catch (BankingDomainException ex)

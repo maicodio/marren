@@ -3,12 +3,12 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Marren.Banking.Domain.Model 
+namespace Marren.Banking.Domain.Model
 {
     /// <summary>
     /// Entidade que representa um movimento da conta corrente
     /// </summary>
-    public class Transaction: Entity
+    public class Transaction : Entity
     {
         /// <summary>
         /// Valor máximo de uma transação (movimento)
@@ -47,6 +47,12 @@ namespace Marren.Banking.Domain.Model
         public Transaction NextTransaction { get; private set; }
 
         /// <summary>
+        /// Armazena uma referência à transação.
+        /// Ex: Conta origem ou destino de uma transferência
+        /// </summary>
+        public string Reference { get; private set; }
+
+        /// <summary>
         /// Construtor interno
         /// </summary>
         protected Transaction()
@@ -61,7 +67,8 @@ namespace Marren.Banking.Domain.Model
         /// <param name="value">Valor</param>
         /// <param name="balance">Saldo</param>
         /// <param name="nextTransaction">Próxima transação</param>
-        public Transaction(Account account, DateTime date, TransactionType type, decimal value, decimal balance, Transaction nextTransaction=null): this()
+        /// <param name="reference">Referência</param>
+        public Transaction(Account account, DateTime date, TransactionType type, decimal value, decimal balance, Transaction nextTransaction = null, string reference = null) : this()
         {
             var errors = new List<ValidationError>();
 
@@ -71,6 +78,7 @@ namespace Marren.Banking.Domain.Model
             this.Value = value;
             this.Balance = balance;
             this.NextTransaction = nextTransaction;
+            this.Reference = reference;
 
             this.Validate(errors);
 
@@ -101,7 +109,7 @@ namespace Marren.Banking.Domain.Model
                 errors.Add(new ValidationError("Tipo de transferência não informado.", "Type", "Transaction"));
             }
 
-            if (Enumeration.GetAll<TransactionType>().Any(x=>x.Id == this.Id))
+            if (Enumeration.GetAll<TransactionType>().Any(x => x.Id == this.Id))
             {
                 errors.Add(new ValidationError("Tipo de transferência inválido", "Type", "Transaction"));
             }
@@ -179,6 +187,56 @@ namespace Marren.Banking.Domain.Model
                 yield return tax;
             }
 
+        }
+
+        /// <summary>
+        /// Sendo esta a ultima transação do cliente contendo o saldo:
+        /// Gera os movimentos de transferênica de conta
+        /// </summary>
+        /// <param name="value">Valor</param>
+        /// <param name="lastTransactionDeposit">Ultima transação da conta de deposito</param>
+        /// <returns>As duas trasações da transferencia, uma de saida e outra de entrada</returns>
+        internal IEnumerable<Transaction> Transfer(decimal value, Transaction lastTransactionDeposit)
+        {
+            value = Math.Round(value, 2);
+            decimal newBalance = this.Balance - value;
+            List<ValidationError> errors = new List<ValidationError>();
+
+            if (value > MAX_VALUE)
+            {
+                errors.Add(new ValidationError($"O valor deve ser menor que {MAX_VALUE}.", "Value", "Transaction"));
+            }
+
+            if (value <= 0)
+            {
+                errors.Add(new ValidationError("O valor deve ser maior que zero.", "Value", "Transaction"));
+            }
+            else if (newBalance < 0 && (-newBalance) > this.Account.OverdraftLimit)
+            {
+                errors.Add(new ValidationError("Sem fundos para realizar a transferência", "Value", "Transaction"));
+            }
+
+            if (lastTransactionDeposit.Account == this.Account)
+            {
+                errors.Add(new ValidationError("Transferências para a mesma conta não são permitidas", "AccountId", "Transaction"));
+            }
+
+            if (errors.Count > 0)
+            {
+                throw new BankingDomainException($"Erro ao realizar a transferência.", errors.ToArray());
+            }
+
+            this.NextTransaction = new Transaction(
+                this.Account, DateTime.Now, TransactionType.TransferOut, -value, newBalance, null, lastTransactionDeposit.Account.Id.ToString());
+            
+            yield return this.NextTransaction;
+
+            decimal newBalanceDeposit = lastTransactionDeposit.Balance + value;
+
+            lastTransactionDeposit.NextTransaction = new Transaction(
+                lastTransactionDeposit.Account, DateTime.Now, TransactionType.TransferIn, value, newBalanceDeposit, null, lastTransactionDeposit.Account.Id.ToString());
+
+            yield return lastTransactionDeposit.NextTransaction;
         }
 
         /// <summary>

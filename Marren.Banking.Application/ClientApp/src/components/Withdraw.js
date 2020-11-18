@@ -31,8 +31,17 @@ export class Withdraw extends Component {
 
   async login() {
     this.setState({ passwordOk: true, loading: true, passwordPreenchido: true });
-    const valor = +this.props.steps['account-withdraw-value'].value.trim().replace(',','.');
-    const balance = await session.withdraw(valor, this.state.password);
+
+    let balance;
+    
+    if (this.props.action == 'transfer') {
+        const valueTransfer = +this.props.steps['account-transfer-value'].value.trim().replace(',','.');
+        const accountIdDeposit = +this.props.steps['account-transfer-deposit-account-value'].value.trim();
+        balance = await session.transfer(valueTransfer, this.state.password, accountIdDeposit);
+    } else {
+        const valueWithdraw = +this.props.steps['account-withdraw-value'].value.trim().replace(',','.');
+        balance = await session.withdraw(valueWithdraw, this.state.password);
+    }
 
     if (balance.ok) {
       this.setState({ balance: balance.data, loading: false, error: null }, () => {
@@ -68,7 +77,9 @@ export class Withdraw extends Component {
 
     if (!this.state.passwordPreenchido) {
       return (<div>
-        <div>Confirme seu saque digitando a senha da sua conta: </div>
+        {this.props.action != 'transfer' ? 
+          <div>Confirme seu saque digitando a senha da sua conta: </div> :
+          <div>Confirme sua transferência digitando a senha da sua conta: </div> }
         <InputGroup>
           <Input
             type="password"
@@ -87,7 +98,10 @@ export class Withdraw extends Component {
 
     return (
       <div>
-        <div>Saque realizado. Agora seu saldo atual é {this.state.balance.toFixed(2).toString().replace('.', ',')}.</div>
+        {this.props.action != 'transfer' ? 
+          <div>Saque realizado.</div> : 
+          <div>Transferência realizada.</div> } 
+        Agora seu saldo atual é {this.state.balance.toFixed(2).toString().replace('.', ',')}.
         {this.state.balance < 0 ? <div>Você está usando o cheque especial. Fale com seu gerente sobre melhores opções de financiamento.</div> : null}
       </div>
     );
