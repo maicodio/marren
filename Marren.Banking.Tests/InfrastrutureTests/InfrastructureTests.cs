@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Marren.Banking.Domain.Services;
 using Marren.Banking.Domain.Kernel;
+using System.Threading;
 
 namespace Marren.Banking.Tests.InfrastrutureTests
 {
@@ -39,6 +40,10 @@ namespace Marren.Banking.Tests.InfrastrutureTests
             this.accountService = new AccountService(this.repository, this.finService, this.authService);
         }
 
+        /// <summary>
+        /// Testa abertura de conta no dia atual
+        /// </summary>
+        /// <returns>Async</returns>
         [Test]
         public async Task OpenAccountTodayTest()
         {
@@ -62,6 +67,14 @@ namespace Marren.Banking.Tests.InfrastrutureTests
 
         }
 
+        /// <summary>
+        /// Testa abertura de conta retroativa a 7 dias
+        /// 
+        /// Usa o WS do BACEN para calcular juros.
+        /// Para o teste de exatidão deve-se usar mock.
+        /// Este teste testa a infra do ws do bacen.
+        /// </summary>
+        /// <returns>Async</returns>
         [Test]
         public async Task OpenAccountLastWeekTest()
         {
@@ -83,10 +96,13 @@ namespace Marren.Banking.Tests.InfrastrutureTests
             Assert.IsNotNull(account, "Não abriu a conta");
             Assert.IsTrue(!account.IsTransient(), "Não obteve o ID da conta");
             balance = await this.accountService.GetBalance(account.Id);
-            Assert.IsTrue(balance < - 1000, "Não calculou as taxas do cheque especial");
+            Assert.IsTrue(balance < -1000, "Não calculou as taxas do cheque especial");
 
         }
 
+        /// <summary>
+        /// Testa o saque sem mock
+        /// </summary>
         [Test]
         public void WithdrawTest()
         {
@@ -113,6 +129,9 @@ namespace Marren.Banking.Tests.InfrastrutureTests
             Assert.IsTrue(balance == transactions.Last().Balance, "Saldo diferente no estrato");
         }
 
+        /// <summary>
+        /// Testa o depósito
+        /// </summary>
         [Test]
         public void DepositTest()
         {
@@ -140,6 +159,77 @@ namespace Marren.Banking.Tests.InfrastrutureTests
             Assert.IsTrue(!account.IsTransient(), "Não obteve o ID da conta");
             Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Authorize(account.Id, "BBB"), "Deixou autorizar com senha errada");
 
+        }
+
+        /// <summary>
+        /// Sqlite não suporta bem operações ASYNC.
+        /// A concorrência no SQLLITE não funciona.
+        /// Testar no mysql. Trabalho futuro
+        /// 
+        /// Fonte:https://docs.microsoft.com/pt-br/dotnet/standard/data/sqlite/async
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task ConcurrencyTest()
+        {
+            Account account = null;
+            Assert.DoesNotThrowAsync(async () => account = await this.accountService.OpenAccount("Maico", 10, 0.012m, "AAA", DateTime.Now, 2000), "Nao conseguiu abrir conta");
+            Assert.IsNotNull(account, "Não abriu a conta");
+            int accid = account.Id;
+            Assert.IsTrue(!account.IsTransient(), "Não obteve o ID da conta");
+            List<Thread> pool = new List<Thread>();
+            Transaction first = await this.repository.GetLastTransaction(accid);
+            System.Collections.Concurrent.ConcurrentBag<int> erros = new System.Collections.Concurrent.ConcurrentBag<int>();
+            System.Collections.Concurrent.ConcurrentBag<int> sucessos = new System.Collections.Concurrent.ConcurrentBag<int>();
+            
+            for (int i = 0; i < 10; i++)
+            {
+                pool.Add(new Thread(async () =>
+                {
+                    var builder = new DbContextOptionsBuilder();
+                    builder.UseSqlite("Data Source=Testes.db");
+
+                    using var ctx = new BankingAccountContext(builder.Options);
+                    var rep = new BankingAccountRepository(ctx);
+                    var aus = new AuthService();
+                    var fs = new FinanceService();
+
+                    var assrv = new AccountService(rep, fs, aus);
+
+                    int errorCount = 0;
+                    int sucessoCount = 0;
+                    decimal balance = await assrv.GetBalance(accid);
+                    do
+                    {
+                        try
+                        {
+                            balance = await assrv.Withdraw(accid, 1, "AAA");
+                            sucessoCount++;
+                        }
+                        catch
+                        {
+                            errorCount++;
+                            if (errorCount > 10000)
+                            {
+                                break;
+                            }
+                        }
+                    } 
+                    while (balance > 0);
+                    erros.Add(errorCount);
+                    sucessos.Add(sucessoCount);
+                }));
+            }
+
+            pool.ForEach(a => a.Start());
+            pool.ForEach(a => a.Join());
+
+            var builder2 = new DbContextOptionsBuilder();
+            builder2.UseSqlite("Data Source=Testes.db");
+            using var ctx2 = new BankingAccountContext(builder2.Options);
+            var first2 = await ctx2.Transactions.FirstOrDefaultAsync(x => x.Id == first.Id);
+            Assert.NotNull(first2.NextTransaction); //Sempre vai falhar.
         }
     }
 }

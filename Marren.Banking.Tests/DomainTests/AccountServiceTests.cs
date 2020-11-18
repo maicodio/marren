@@ -22,6 +22,9 @@ namespace Marren.Banking.Tests.DomainTests
         {
         }
 
+        /// <summary>
+        /// Testa autorização com mock
+        /// </summary>
         [Test]
         public void AuthorizeTests()
         {
@@ -37,6 +40,10 @@ namespace Marren.Banking.Tests.DomainTests
             Assert.DoesNotThrowAsync(async () => await accountService.Authorize(0, "AAAA"), "Senha Sucesso");
         }
 
+        /// <summary>
+        /// Abertura de conta com mock
+        /// Campos inválidos
+        /// </summary>
         [Test]
         public void OpenAccountTests()
         {
@@ -53,6 +60,10 @@ namespace Marren.Banking.Tests.DomainTests
             Assert.DoesNotThrowAsync(async () => await accountService.OpenAccount("Maico", 0, 0, "aaaa", DateTime.Now.Date, -10), "Sucesso");
         }
 
+        /// <summary>
+        /// Teste do saldo com mock
+        /// Testa as taxas de juros
+        /// </summary>
         [Test]
         public void GetBalanceTest()
         {
@@ -75,16 +86,19 @@ namespace Marren.Banking.Tests.DomainTests
             dummyRepo.GetLastTransactionResult = new Transaction(dummyRepo.GetAccountByIdResult, DateTime.Now.Date.AddDays(-2), TransactionType.Openning, -10, -10, null);
             Assert.DoesNotThrowAsync(async () => { balance = await accountService.GetBalance(1); }, "Transações geradas");
             Assert.IsTrue(balance == -10.12m, "Não calculou juros cheque especial.");
-            Assert.IsTrue(dummyRepo.AddedTractions.Count == 3, "Deveria ser 6 transações");
+            Assert.IsTrue(dummyRepo.AddedTractions.Count == 3, "Deveria ser 3 transações");
 
             dummyRepo.AddedTractions.Clear();
             dummyRepo.GetLastTransactionResult = new Transaction(dummyRepo.GetAccountByIdResult, DateTime.Now.Date.AddDays(-2), TransactionType.Openning, 0, 0, null);
             Assert.DoesNotThrowAsync(async () => { balance = await accountService.GetBalance(1); }, "Transações geradas");
             Assert.IsTrue(balance == 0, "Saldo deveria estar zerado");
 
-            Assert.IsTrue(dummyRepo.AddedTractions.Count == 2, "Deveria ser tres transações");
+            Assert.IsTrue(dummyRepo.AddedTractions.Count == 2, "Deveria ser 2 transações");
         }
 
+        /// <summary>
+        /// Teste do deposito com mock
+        /// </summary>
         [Test]
         public void DepositTests()
         {
@@ -101,6 +115,9 @@ namespace Marren.Banking.Tests.DomainTests
             Assert.DoesNotThrowAsync(async () => await accountService.Deposit(0, 10), "Sucesso");
         }
 
+        /// <summary>
+        /// Teste do saque com mock
+        /// </summary>
         [Test]
         public void WithdrawTests()
         {
@@ -123,6 +140,9 @@ namespace Marren.Banking.Tests.DomainTests
 
         }
 
+        /// <summary>
+        /// Teste do extrato (melhorar)
+        /// </summary>
         [Test]
         public void GetStatementsTests()
         {
@@ -143,6 +163,9 @@ namespace Marren.Banking.Tests.DomainTests
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        /// <summary>
+        /// Mock do serviço financeiro
+        /// </summary>
         class DummyFinanceService : IFinanceService
         {
             public async Task<Dictionary<string, decimal>> GetInterestRate(DateTime start, DateTime end)
@@ -152,6 +175,9 @@ namespace Marren.Banking.Tests.DomainTests
             }
         }
 
+        /// <summary>
+        /// Mock do repositório
+        /// </summary>
         class DummyBankingRepository : IBankingRepository
         {
 
