@@ -11,7 +11,7 @@ namespace Marren.Banking.Domain.Model
     public class Transaction : Entity
     {
         /// <summary>
-        /// Valor máximo de uma transação (movimento)
+        /// Valor mÃ¡ximo de uma transaÃ§Ã£o (movimento)
         /// </summary>
         private const decimal MAX_VALUE = 1000000000m;
 
@@ -21,17 +21,17 @@ namespace Marren.Banking.Domain.Model
         public Account Account { get; private set; }
 
         /// <summary>
-        /// Data e hora da transação (movimento)
+        /// Data e hora da transaÃ§Ã£o (movimento)
         /// </summary>
         public DateTime Date { get; private set; }
 
         /// <summary>
-        /// Tipo de transação
+        /// Tipo de transaÃ§Ã£o
         /// </summary>
         public TransactionType Type { get; private set; }
 
         /// <summary>
-        /// Valor da transação.
+        /// Valor da transaÃ§Ã£o.
         /// Pode ser negativo, de acordo com o tipo.
         /// </summary>
         public decimal Value { get; private set; }
@@ -42,13 +42,13 @@ namespace Marren.Banking.Domain.Model
         public decimal Balance { get; private set; }
 
         /// <summary>
-        /// Armazena o ID da proxima transação.
+        /// Armazena o ID da proxima transaÃ§Ã£o.
         /// </summary>
         public Transaction NextTransaction { get; private set; }
 
         /// <summary>
-        /// Armazena uma referência à transação.
-        /// Ex: Conta origem ou destino de uma transferência
+        /// Armazena uma referÃªncia Ã  transaÃ§Ã£o.
+        /// Ex: Conta origem ou destino de uma transferÃªncia
         /// </summary>
         public string Reference { get; private set; }
 
@@ -62,12 +62,12 @@ namespace Marren.Banking.Domain.Model
         /// Construtor
         /// </summary>
         /// <param name="account">Conta corrente</param>
-        /// <param name="date">Data da operação</param>
-        /// <param name="type">Tipo de transação</param>
+        /// <param name="date">Data da operaÃ§Ã£o</param>
+        /// <param name="type">Tipo de transaÃ§Ã£o</param>
         /// <param name="value">Valor</param>
         /// <param name="balance">Saldo</param>
-        /// <param name="nextTransaction">Próxima transação</param>
-        /// <param name="reference">Referência</param>
+        /// <param name="nextTransaction">PrÃ³xima transaÃ§Ã£o</param>
+        /// <param name="reference">ReferÃªncia</param>
         public Transaction(Account account, DateTime date, TransactionType type, decimal value, decimal balance, Transaction nextTransaction = null, string reference = null) : this()
         {
             var errors = new List<ValidationError>();
@@ -84,34 +84,34 @@ namespace Marren.Banking.Domain.Model
 
             if (errors.Count > 0)
             {
-                throw new BankingDomainException("Campos inválidos", errors.ToArray());
+                throw new BankingDomainException("Campos invÃ¡lidos", errors.ToArray());
             }
         }
 
         /// <summary>
-        /// Valida a transação
+        /// Valida a transaÃ§Ã£o
         /// </summary>
         /// <param name="errors">Lista de erros</param>
         private void Validate(IList<ValidationError> errors)
         {
             if (this.Account == null)
             {
-                errors.Add(new ValidationError("Conta inválida", "Account", "Transaction"));
+                errors.Add(new ValidationError("Conta invÃ¡lida", "Account", "Transaction"));
             }
 
             if (this.Date > DateTime.Now)
             {
-                errors.Add(new ValidationError("Data da transferência inválida.", "Value", "Transaction"));
+                errors.Add(new ValidationError("Data da transferÃªncia invÃ¡lida.", "Value", "Transaction"));
             }
 
             if (this.Type == null)
             {
-                errors.Add(new ValidationError("Tipo de transferência não informado.", "Type", "Transaction"));
+                errors.Add(new ValidationError("Tipo de transferÃªncia nÃ£o informado.", "Type", "Transaction"));
             }
 
             if (Enumeration.GetAll<TransactionType>().Any(x => x.Id == this.Id))
             {
-                errors.Add(new ValidationError("Tipo de transferência inválido", "Type", "Transaction"));
+                errors.Add(new ValidationError("Tipo de transferÃªncia invÃ¡lido", "Type", "Transaction"));
             }
 
             this.Value = Math.Round(this.Value, 2);
@@ -119,22 +119,22 @@ namespace Marren.Banking.Domain.Model
         }
 
         /// <summary>
-        /// Método para calcular o saldo do dia seguinte
+        /// MÃ©todo para calcular o saldo do dia seguinte
         /// 
-        /// O saldo da conta do cliente fica armazenado na última transação realizada pelo cliente.
+        /// O saldo da conta do cliente fica armazenado na Ãºltima transaÃ§Ã£o realizada pelo cliente.
         /// 
-        /// Quando se busca o saldo atualizado é necessário processar todos os dias desde a última transação
+        /// Quando se busca o saldo atualizado Ã© necessÃ¡rio processar todos os dias desde a Ãºltima transaÃ§Ã£o
         /// para calcular rendimentos e taxas da conta do cliente.
         /// 
-        /// Sendo esta transação a última transação da conta, e não sendo do dia de hoje, este método calcula o saldo
-        /// do dia seguinte pelos parâmetros, gerando um movimento de saldo e um movimento de rendimento ou taxa.
+        /// Sendo esta transaÃ§Ã£o a Ãºltima transaÃ§Ã£o da conta, e nÃ£o sendo do dia de hoje, este mÃ©todo calcula o saldo
+        /// do dia seguinte pelos parÃ¢metros, gerando um movimento de saldo e um movimento de rendimento ou taxa.
         /// 
-        /// O método AccountService GetLastTransaction orquestra a obtenção desse saldo, chamando este método enquanto
-        /// não estiver com o saldo do dia.
+        /// O mÃ©todo AccountService GetLastTransaction orquestra a obtenÃ§Ã£o desse saldo, chamando este mÃ©todo enquanto
+        /// nÃ£o estiver com o saldo do dia.
         /// </summary>
         /// <param name="interestRate">Taxa de juros do dia</param>
         /// <param name="overdraftTax">Taxa do limite do cheque especial</param>
-        /// <returns>Lista de transações do saldo do dia seguinte</returns>
+        /// <returns>Lista de transaÃ§Ãµes do saldo do dia seguinte</returns>
         internal IEnumerable<Transaction> GenerateNextDayBalance(decimal interestRate, decimal overdraftTax)
         {
             DateTime newDate = this.Date.Date.AddDays(1);
@@ -142,17 +142,17 @@ namespace Marren.Banking.Domain.Model
 
             if (this.NextTransaction != null)
             {
-                errors.Add(new ValidationError("Está não é a última transação."));
+                errors.Add(new ValidationError("EstÃ¡ nÃ£o Ã© a Ãºltima transaÃ§Ã£o."));
             }
 
             if (interestRate < 0)
             {
-                errors.Add(new ValidationError("Taxa de juros inválida."));
+                errors.Add(new ValidationError("Taxa de juros invÃ¡lida."));
             }
 
             if (overdraftTax < 0)
             {
-                errors.Add(new ValidationError("Taxa do cheque especial inválida."));
+                errors.Add(new ValidationError("Taxa do cheque especial invÃ¡lida."));
             }
 
             if (errors.Count > 0)
@@ -162,7 +162,7 @@ namespace Marren.Banking.Domain.Model
             }
 
             Transaction tax = null;
-            //interestRate == 0 significa que era feriado. Não calcula juros nem taxas.
+            //interestRate == 0 significa que era feriado. NÃ£o calcula juros nem taxas.
             if (interestRate > 0)
             {
                 if (this.Balance > 0)
@@ -190,12 +190,12 @@ namespace Marren.Banking.Domain.Model
         }
 
         /// <summary>
-        /// Sendo esta a ultima transação do cliente contendo o saldo:
-        /// Gera os movimentos de transferênica de conta
+        /// Sendo esta a ultima transaÃ§Ã£o do cliente contendo o saldo:
+        /// Gera os movimentos de transferÃªnica de conta
         /// </summary>
         /// <param name="value">Valor</param>
-        /// <param name="lastTransactionDeposit">Ultima transação da conta de deposito</param>
-        /// <returns>As duas trasações da transferencia, uma de saida e outra de entrada</returns>
+        /// <param name="lastTransactionDeposit">Ultima transaÃ§Ã£o da conta de deposito</param>
+        /// <returns>As duas trasaÃ§Ãµes da transferencia, uma de saida e outra de entrada</returns>
         internal IEnumerable<Transaction> Transfer(decimal value, Transaction lastTransactionDeposit)
         {
             value = Math.Round(value, 2);
@@ -213,17 +213,17 @@ namespace Marren.Banking.Domain.Model
             }
             else if (newBalance < 0 && (-newBalance) > this.Account.OverdraftLimit)
             {
-                errors.Add(new ValidationError("Sem fundos para realizar a transferência", "Value", "Transaction"));
+                errors.Add(new ValidationError("Sem fundos para realizar a transferÃªncia", "Value", "Transaction"));
             }
 
             if (lastTransactionDeposit.Account == this.Account)
             {
-                errors.Add(new ValidationError("Transferências para a mesma conta não são permitidas", "AccountId", "Transaction"));
+                errors.Add(new ValidationError("TransferÃªncias para a mesma conta nÃ£o sÃ£o permitidas", "AccountId", "Transaction"));
             }
 
             if (errors.Count > 0)
             {
-                throw new BankingDomainException($"Erro ao realizar a transferência.", errors.ToArray());
+                throw new BankingDomainException($"Erro ao realizar a transferÃªncia.", errors.ToArray());
             }
 
             this.NextTransaction = new Transaction(
@@ -242,12 +242,12 @@ namespace Marren.Banking.Domain.Model
         /// <summary>
         /// Saque
         /// 
-        /// Sendo esta a última transação do dia do cliente
-        /// Realiza o saque, gerando uma nova transação e armazenando 
-        /// o id da proxima transação nesta.
+        /// Sendo esta a Ãºltima transaÃ§Ã£o do dia do cliente
+        /// Realiza o saque, gerando uma nova transaÃ§Ã£o e armazenando 
+        /// o id da proxima transaÃ§Ã£o nesta.
         /// </summary>
         /// <param name="value">Valor a ser sacado</param>
-        /// <returns>Transação de saque</returns>
+        /// <returns>TransaÃ§Ã£o de saque</returns>
         internal Transaction Withdraw(decimal value)
         {
             value = Math.Round(value, 2);
@@ -278,14 +278,14 @@ namespace Marren.Banking.Domain.Model
         }
 
         /// <summary>
-        /// Depósito
+        /// DepÃ³sito
         /// 
-        /// Sendo esta a última transação do dia do cliente
-        /// Realiza o depósito, gerando uma nova transação e armazenando 
-        /// o id da proxima transação nesta.
+        /// Sendo esta a Ãºltima transaÃ§Ã£o do dia do cliente
+        /// Realiza o depÃ³sito, gerando uma nova transaÃ§Ã£o e armazenando 
+        /// o id da proxima transaÃ§Ã£o nesta.
         /// </summary>
-        /// <param name="value">Valor do depósito</param>
-        /// <returns>Transação de depósito</returns>
+        /// <param name="value">Valor do depÃ³sito</param>
+        /// <returns>TransaÃ§Ã£o de depÃ³sito</returns>
         internal Transaction Deposit(decimal value)
         {
             List<ValidationError> errors = new List<ValidationError>();
@@ -302,7 +302,7 @@ namespace Marren.Banking.Domain.Model
 
             if (errors.Count > 0)
             {
-                throw new BankingDomainException($"Erro ao realizar o depósito.", errors.ToArray());
+                throw new BankingDomainException($"Erro ao realizar o depÃ³sito.", errors.ToArray());
             }
             this.NextTransaction = new Transaction(this.Account, DateTime.Now, TransactionType.Deposit, value, this.Balance + value);
             return this.NextTransaction;
@@ -322,28 +322,28 @@ namespace Marren.Banking.Domain.Model
 
             if (start > DateTime.Now.Date)
             {
-                errors.Add(new ValidationError("Não pesquisar data futura.", "Start", "Transaction"));
+                errors.Add(new ValidationError("NÃ£o pesquisar data futura.", "Start", "Transaction"));
             }
 
             if (end.Value < start)
             {
-                errors.Add(new ValidationError("A data inicial não pode ser posterior a data final.", "Start", "Transaction"));
+                errors.Add(new ValidationError("A data inicial nÃ£o pode ser posterior a data final.", "Start", "Transaction"));
             }
 
             if ((end.Value - start).TotalDays > 100)
             {
-                errors.Add(new ValidationError("A pesquisa não pode exceder 100 dias.", "Start", "Transaction"));
+                errors.Add(new ValidationError("A pesquisa nÃ£o pode exceder 100 dias.", "Start", "Transaction"));
             }
 
             DateTime minDate = new DateTime(2020, 3, 1);
             if (start < minDate)
             {
-                errors.Add(new ValidationError($"Data mínima é {minDate:dd/MM/yyyy}.", "Start", "Transaction"));
+                errors.Add(new ValidationError($"Data mÃ­nima Ã© {minDate:dd/MM/yyyy}.", "Start", "Transaction"));
             }
 
             if (errors.Count > 0)
             {
-                throw new BankingDomainException("Filtro de datas inválido.", errors.ToArray());
+                throw new BankingDomainException("Filtro de datas invÃ¡lido.", errors.ToArray());
             }
         }
     }

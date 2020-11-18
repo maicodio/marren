@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Marren.Banking.Domain.Kernel
 {

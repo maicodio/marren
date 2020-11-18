@@ -1,0 +1,74 @@
+@startuml Entidades
+skinparam monochrome true
+skinparam roundcorner 10
+
+class AccountService {
+        - repository;
+        - authService;
+        - financeService;
+        ---
+        + constructor(repository, financeService, authService){
+        + OpenAccount(name, overdraftLimit, overdraftTax, password, date, initialDeposit)
+        + Authorize(accountId, password)
+        + GetBalance(accountId)
+        + GetStatement(accountId, start, end)
+        + Withdraw(accountId, value, password)
+        + Transfer(accountId, value, password, accountIdDeposit)
+        + Deposit(accountId, value)
+        - GetLastTransaction(account)
+        
+}
+
+class IBankingRepository {
+        + AddAccount(account);
+        + GetAccountByIdAndHash(accountId,passwordHash);
+        + GetAccountById(accountId);
+        + AddTransaction(transaction);
+        + GetLastTransaction(accountId);
+        + GetTransactions(accountId, init, end);
+        + SaveChanges();
+}
+
+class IFinanceService {
+        + GetInterestRate(start, end);
+}
+
+class IAuthService {
+        +GenerateHash(password);
+}
+
+AccountService -- IBankingRepository
+AccountService -- IFinanceService
+AccountService -- IAuthService
+
+class Account {
+        + Name
+        + OpeningDate
+        + OverdraftLimit
+        + OverdraftTax
+        + PasswordHash
+}
+
+class Transaction {
+        + Account
+        + Date
+        + Type
+        + Value
+        + Balance
+        + NextTransaction
+        + Reference
+}
+
+enum TransactionType {
+        + Id
+        + Name
+}
+
+AccountService -- Transaction
+AccountService -- Account
+
+Account "1" - "*" Transaction
+Transaction - Transaction
+Transaction -- TransactionType
+
+@enduml

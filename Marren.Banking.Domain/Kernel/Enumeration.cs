@@ -6,12 +6,12 @@ using System.Reflection;
 namespace Marren.Banking.Domain.Kernel
 {
     /// <summary>
-    /// Classe para representar as enumerações de domínio
+    /// Classe para representar as enumeraÃ§Ãµes de domÃ­nio
     /// 
-    /// É diferente de usar uma enum do C# por que permite extender
-    /// colocando outros campos como descrição e outros.
+    /// Ã‰ diferente de usar uma enum do C# por que permite extender
+    /// colocando outros campos como descriÃ§Ã£o e outros.
     /// 
-    /// Pode ter uma tabela no repositório associada a aela.
+    /// Pode ter uma tabela no repositÃ³rio associada a aela.
     /// </summary>
     public abstract class Enumeration : IComparable
     {
@@ -40,9 +40,9 @@ namespace Marren.Banking.Domain.Kernel
         public override string ToString() => Name;
 
         /// <summary>
-        /// Obtém todos os valores possíveis desta enumeração
+        /// ObtÃ©m todos os valores possÃ­veis desta enumeraÃ§Ã£o
         /// </summary>
-        /// <typeparam name="T">Tipo da Enumeração</typeparam>
+        /// <typeparam name="T">Tipo da EnumeraÃ§Ã£o</typeparam>
         /// <returns></returns>
         public static IEnumerable<T> GetAll<T>() where T : Enumeration
         {
@@ -72,7 +72,7 @@ namespace Marren.Banking.Domain.Kernel
         /// Compara este enum com outro
         /// </summary>
         /// <param name="other">outro enum</param>
-        /// <returns>Comparação entre IDs das enums</returns>
+        /// <returns>ComparaÃ§Ã£o entre IDs das enums</returns>
         public int CompareTo(object other) => Id.CompareTo(((Enumeration)other).Id);
 
         /// <summary>

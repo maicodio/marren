@@ -3,12 +3,12 @@ using System;
 namespace Marren.Banking.Domain.Kernel
 {
     /// <summary>
-    /// Classe para indicar um problema de validação no domínio
+    /// Classe para indicar um problema de validaÃ§Ã£o no domÃ­nio
     /// </summary>
     public class ValidationError
     {   
         /// <summary>
-        /// A entidade origem do domínio
+        /// A entidade origem do domÃ­nio
         /// </summary>
         public string Source { get; private set; }
         
@@ -18,14 +18,14 @@ namespace Marren.Banking.Domain.Kernel
         public string Id { get; private set; } 
 
         /// <summary>
-        /// Descrição do problema
+        /// DescriÃ§Ã£o do problema
         /// </summary>
         public string Message { get; private set; } 
 
         /// <summary>
         /// Construtor
         /// </summary>
-        /// <param name="message">Descrição do problema</param>
+        /// <param name="message">DescriÃ§Ã£o do problema</param>
         /// <param name="id">Identificador do campo relacionado</param>
         /// <param name="source">Entidade que originou o problema</param>
         public ValidationError(string message, string id=null, string source=null)

@@ -5,12 +5,12 @@ using System.Linq;
 namespace Marren.Banking.Domain.Kernel
 {
     /// <summary>
-    /// Exceção padrão emitida nas validações das regras do domínio
+    /// ExceÃ§Ã£o padrÃ£o emitida nas validaÃ§Ãµes das regras do domÃ­nio
     /// </summary>
     public class BankingDomainException : ApplicationException
     {
         /// <summary>
-        /// Lista de erros da validação
+        /// Lista de erros da validaÃ§Ã£o
         /// </summary>
         public IReadOnlyCollection<ValidationError> ValidationErrors { get; private set; } = new List<ValidationError>(); 
 
@@ -23,8 +23,8 @@ namespace Marren.Banking.Domain.Kernel
         /// <summary>
         /// Costrutor parametrizado
         /// </summary>
-        /// <param name="message">mensagem de erro mais genérica</param>
-        /// <param name="errors">Lista de erros de validação</param>
+        /// <param name="message">mensagem de erro mais genÃ©rica</param>
+        /// <param name="errors">Lista de erros de validaÃ§Ã£o</param>
         public BankingDomainException(string message, params ValidationError[] errors)
             : base(message)
         { 
@@ -40,10 +40,10 @@ namespace Marren.Banking.Domain.Kernel
         { }
 
         /// <summary>
-        /// Construtor para tratamento de outras exceções.
+        /// Construtor para tratamento de outras exceÃ§Ãµes.
         /// </summary>
         /// <param name="message">mensagem do erro</param>
-        /// <param name="innerException">Exceção tratada.</param>
+        /// <param name="innerException">ExceÃ§Ã£o tratada.</param>
         public BankingDomainException(string message, Exception innerException)
             : base(message, innerException)
         { }

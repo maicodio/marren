@@ -8,23 +8,23 @@ using System.Threading.Tasks;
 namespace Marren.Banking.Domain.Services
 {
     /// <summary>
-    /// Serviço do domínio para os serviços da conta corrente.
+    /// ServiÃ§o do domÃ­nio para os serviÃ§os da conta corrente.
     /// </summary>
     public class AccountService
     {
-        /// <summary>Repositório</summary>
+        /// <summary>RepositÃ³rio</summary>
         private readonly IBankingRepository repository;
-        /// <summary>Serviço de autenticação</summary>
+        /// <summary>ServiÃ§o de autenticaÃ§Ã£o</summary>
         private readonly IAuthService authService;
-        /// <summary>Serviço financeiro</summary>
+        /// <summary>ServiÃ§o financeiro</summary>
         private readonly IFinanceService financeService;
 
         /// <summary>
         /// Construtor
         /// </summary>
-        /// <param name="repository">Repositório</param>
-        /// <param name="financeService">Serviço Financeiro</param>
-        /// <param name="authService">Serviço de Autenticação</param>
+        /// <param name="repository">RepositÃ³rio</param>
+        /// <param name="financeService">ServiÃ§o Financeiro</param>
+        /// <param name="authService">ServiÃ§o de AutenticaÃ§Ã£o</param>
         public AccountService(IBankingRepository repository, IFinanceService financeService, IAuthService authService){
             this.repository = repository;
             this.authService = authService;
@@ -34,12 +34,12 @@ namespace Marren.Banking.Domain.Services
         /// <summary>
         /// Abertura de conta
         /// </summary>
-        /// <param name="name">Nome do títular da conta</param>
+        /// <param name="name">Nome do tÃ­tular da conta</param>
         /// <param name="overdraftLimit">Limite de cheque especial</param>
         /// <param name="overdraftTax">Taxa do cheque especial</param>
         /// <param name="password">Senha</param>
         /// <param name="date">Data de abertura</param>
-        /// <param name="initialDeposit">Depósito inicial</param>
+        /// <param name="initialDeposit">DepÃ³sito inicial</param>
         /// <returns>Retorna a conta aberta assincronamente</returns>
         public async Task<Account> OpenAccount(string name, decimal overdraftLimit, decimal overdraftTax, string password, DateTime date, decimal initialDeposit = 0)
         {
@@ -55,9 +55,9 @@ namespace Marren.Banking.Domain.Services
         }
 
         /// <summary>
-        /// Autentica uma conta com base no número e na senha
+        /// Autentica uma conta com base no nÃºmero e na senha
         /// </summary>
-        /// <param name="accountId">Número da conta</param>
+        /// <param name="accountId">NÃºmero da conta</param>
         /// <param name="password">Senha</param>
         /// <returns>Retorna a conta autenticada assincronamente</returns>
         public async Task<Account> Authorize(int accountId, string password)
@@ -65,19 +65,19 @@ namespace Marren.Banking.Domain.Services
             Account.ValidatePassword(password);
             string passwordHash = await this.authService.GenerateHash(password);
             var loggedAccount = await this.repository.GetAccountByIdAndHash(accountId, passwordHash) 
-                ?? throw new BankingDomainException("Conta ou Senha Inválidos.");
+                ?? throw new BankingDomainException("Conta ou Senha InvÃ¡lidos.");
             return loggedAccount;
         }
 
         /// <summary>
-        /// Obtém o saldo de uma conta
+        /// ObtÃ©m o saldo de uma conta
         /// </summary>
-        /// <param name="accountId">Número da conta</param>
+        /// <param name="accountId">NÃºmero da conta</param>
         /// <returns>O valor do saldo assincronamente</returns>
         public async Task<decimal> GetBalance(int accountId)
         {
             Account account = await this.repository.GetAccountById(accountId)
-                 ?? throw new BankingDomainException("Conta inválida.");
+                 ?? throw new BankingDomainException("Conta invÃ¡lida.");
 
             Transaction lastTransaction = await this.GetLastTransaction(account);
 
@@ -90,18 +90,18 @@ namespace Marren.Banking.Domain.Services
         }
 
         /// <summary>
-        /// Obtém o extrato da conta
+        /// ObtÃ©m o extrato da conta
         /// </summary>
-        /// <param name="accountId">Número da conta</param>
+        /// <param name="accountId">NÃºmero da conta</param>
         /// <param name="start">Filtro de data inicial</param>
         /// <param name="end">Filtro de data final</param>
-        /// <returns>Lista de transações assincronamente</returns>
+        /// <returns>Lista de transaÃ§Ãµes assincronamente</returns>
         public async Task<IEnumerable<Transaction>> GetStatement(int accountId, DateTime start, DateTime? end)
         {
             Transaction.ValidateStatementFilter(ref start, ref end);
 
             Account account = await this.repository.GetAccountById(accountId)
-                ?? throw new BankingDomainException("Conta inválida.");
+                ?? throw new BankingDomainException("Conta invÃ¡lida.");
 
             var last = await this.GetLastTransaction(account);
 
@@ -116,9 +116,9 @@ namespace Marren.Banking.Domain.Services
         /// <summary>
         /// Saque
         /// </summary>
-        /// <param name="accountId">Número da conta</param>
+        /// <param name="accountId">NÃºmero da conta</param>
         /// <param name="value">Valor</param>
-        /// <param name="password">Senha de confirmação</param>
+        /// <param name="password">Senha de confirmaÃ§Ã£o</param>
         /// <returns>Saldo atualizado assincronamente</returns>
         public async Task<decimal> Withdraw(int accountId, decimal value, string password)
         {
@@ -137,17 +137,17 @@ namespace Marren.Banking.Domain.Services
         /// <summary>
         /// Pagamentos
         /// </summary>
-        /// <param name="accountId">Número da conta Origem</param>
+        /// <param name="accountId">NÃºmero da conta Origem</param>
         /// <param name="value">Valor</param>
-        /// <param name="password">Senha de confirmação</param>
-        /// <param name="accountIdDeposit">Número da conta de deposito</param>
+        /// <param name="password">Senha de confirmaÃ§Ã£o</param>
+        /// <param name="accountIdDeposit">NÃºmero da conta de deposito</param>
         /// <returns>Saldo atualizado assincronamente</returns>
         public async Task<decimal> Transfer(int accountId, decimal value, string password, int accountIdDeposit)
         {
             Account.ValidatePassword(password);
             Account account = await this.Authorize(accountId, password);
             Account accountDeposit = await this.repository.GetAccountById(accountIdDeposit) 
-                ?? throw new BankingDomainException("A conta de depósito é inválida."); ;
+                ?? throw new BankingDomainException("A conta de depÃ³sito Ã© invÃ¡lida."); ;
 
             Transaction lastTransactionWithdraw = await this.GetLastTransaction(account);
             Transaction lastTransactionDeposit = await this.GetLastTransaction(accountDeposit);
@@ -162,15 +162,15 @@ namespace Marren.Banking.Domain.Services
         }
 
         /// <summary>
-        /// Depósito
+        /// DepÃ³sito
         /// </summary>
-        /// <param name="accountId">Número da conta</param>
+        /// <param name="accountId">NÃºmero da conta</param>
         /// <param name="value">Valor</param>
         /// <returns>Saldo atualizado assincronamente</returns>
         public async Task<decimal> Deposit(int accountId, decimal value)
         {
             Account account = await this.repository.GetAccountById(accountId)
-                 ?? throw new BankingDomainException("Conta inválida.");
+                 ?? throw new BankingDomainException("Conta invÃ¡lida.");
 
             Transaction lastTransaction = await this.GetLastTransaction(account);
             Transaction newTransaction = lastTransaction.Deposit(value);
@@ -182,51 +182,49 @@ namespace Marren.Banking.Domain.Services
         }
 
         /// <summary>
-        /// Obtém a última transação (movimento) do dia de hoje.
+        /// ObtÃ©m a Ãºltima transaÃ§Ã£o (movimento) do dia de hoje.
         /// 
-        /// Se a última transação do cliente não for do dia de hoje,
-        /// gera transações de saldo e de rendimentos/taxas até chegar no dia de hoje.
+        /// Se a Ãºltima transaÃ§Ã£o do cliente nÃ£o for do dia de hoje,
+        /// gera transaÃ§Ãµes de saldo e de rendimentos/taxas atÃ© chegar no dia de hoje.
         /// 
-        /// Consulta o serviço financeiro, para obter quais dias úteis e quais rendimentos
-        /// que são devidos/cobrados da conta do cliente.
+        /// Consulta o serviÃ§o financeiro, para obter quais dias Ãºteis e quais rendimentos
+        /// que sÃ£o devidos/cobrados da conta do cliente.
         /// </summary>
         /// <param name="account">COnta</param>
-        /// <returns>Última transação do dia</returns>
+        /// <returns>Ãšltima transaÃ§Ã£o do dia</returns>
         private async Task<Transaction> GetLastTransaction(Account account)
         {
             Transaction lastTransaction = await this.repository.GetLastTransaction(account.Id)
-                ?? throw new BankingDomainException("Nenhuma transação encontrada.");
+                ?? throw new BankingDomainException("Nenhuma transaÃ§Ã£o encontrada.");
 
             Dictionary<string, decimal> interestRates = null;
 
-            //Enquanto a última transação da conta não for do dia atual
+            //Enquanto a Ãºltima transaÃ§Ã£o da conta nÃ£o for do dia atual
             while (lastTransaction.Date.Date < DateTime.Today)
             {
-                //Se não obteve as taxas/dias do período ainda
+                //Se nÃ£o obteve as taxas/dias do perÃ­odo ainda
                 if (interestRates == null)
                 {
-                    //Obtém as taxas/dias do período.
+                    //ObtÃ©m as taxas/dias do perÃ­odo.
                     interestRates = await this.financeService.GetInterestRate(lastTransaction.Date, DateTime.Today);
                 }
 
-                //Obtém os juros do dia. Se não houver considera feriado.
+                //ObtÃ©m os juros do dia. Se nÃ£o houver considera feriado.
                 interestRates.TryGetValue(lastTransaction.Date.ToString("yyyyMMdd"), out decimal interestRate);
 
-                //Para cada transação gerada (saldo e rendimentos/taxas)
+                //Para cada transaÃ§Ã£o gerada (saldo e rendimentos/taxas)
                 foreach (var item in lastTransaction.GenerateNextDayBalance(interestRate, account.OverdraftTax))
                 {
-                    //Adiciona a transação no repositório.
+                    //Adiciona a transaÃ§Ã£o no repositÃ³rio.
                     await this.repository.AddTransaction(item);
                     lastTransaction = item;
                 }
-                //É necessário salvar o saldo do dia a cada iteração
+                //Ã‰ necessÃ¡rio salvar o saldo do dia a cada iteraÃ§Ã£o
                 //para evitar uma lista encadeada muito longa.
-                //Em caso de falha, a rotina tem consições de continuar daonde parou.
+                //Em caso de falha, a rotina tem consiÃ§Ãµes de continuar daonde parou.
                 await this.repository.SaveChanges();
             }
             return lastTransaction;
         }
-
-
     }
 }

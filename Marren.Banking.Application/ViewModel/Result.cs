@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Marren.Banking.Application.ViewModel
 {
     /// <summary>
-    /// ViewModel de resultado padr„o da API
+    /// ViewModel de resultado padr√£o da API
     /// </summary>
     public class Result
     {
@@ -74,8 +74,8 @@ namespace Marren.Banking.Application.ViewModel
     }
 
     /// <summary>
-    /// ViewModel de resultado padr„o da API
-    /// Com dados genÈricos
+    /// ViewModel de resultado padr√£o da API
+    /// Com dados gen√©ricos
     /// </summary>
     /// <typeparam name="T">Tipo de dado retornado</typeparam>
     public class Result<T> : Result

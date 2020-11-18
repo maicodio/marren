@@ -1,4 +1,4 @@
-﻿using Marren.Banking.Domain.Kernel;
+using Marren.Banking.Domain.Kernel;
 using Marren.Banking.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using System;

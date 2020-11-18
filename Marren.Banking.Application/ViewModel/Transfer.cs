@@ -3,7 +3,7 @@ using System;
 namespace Marren.Banking.Application.ViewModel
 {
     /// <summary>
-    /// ViewModel do Saque
+    /// ViewModel do Saque 
     /// </summary>
     public class Transfer
     {

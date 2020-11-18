@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Marren.Banking.Domain.Contracts
 {
     /// <summary>
-    /// Contrato para o serviço de autorização.
+    /// Contrato para o serviÃ§o de autorizaÃ§Ã£o.
     /// </summary>
     public interface IAuthService
     {

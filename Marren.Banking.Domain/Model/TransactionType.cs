@@ -40,7 +40,7 @@ namespace Marren.Banking.Domain.Model
         /// </summary>
         public static TransactionType Fees = new TransactionType(6, "Taxas");
         /// <summary>
-        /// Transferência entre contas
+        /// Transferência entre contas 
         /// Transação de transferência de saída da conta
         /// </summary>
         public static TransactionType TransferOut = new TransactionType(7, "Pago para");

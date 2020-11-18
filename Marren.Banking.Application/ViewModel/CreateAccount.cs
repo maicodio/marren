@@ -3,7 +3,7 @@ using System;
 namespace Marren.Banking.Application.ViewModel
 {
     /// <summary>
-    /// ModelView para criação de conta corrente
+    /// ModelView para criaÃ§Ã£o de conta corrente
     /// </summary>
     public class CreateAccount
     {
@@ -28,7 +28,7 @@ namespace Marren.Banking.Application.ViewModel
         public decimal OverdraftTax { get; set; }
 
         /// <summary>
-        /// Depósito inicial
+        /// DepÃ³sito inicial
         /// </summary>
         public decimal initialDeposit { get; set; }
 

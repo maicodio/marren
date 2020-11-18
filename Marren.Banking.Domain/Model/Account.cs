@@ -48,7 +48,7 @@ namespace Marren.Banking.Domain.Model
         /// <param name="name">Nome da conta</param>
         /// <param name="overdraftLimit">Limite do cheque especial</param>
         /// <param name="overdraftTax">Taxa do cheque especial</param>
-        /// <param name="password">Senha (para fins de validaÁ„o)</param>
+        /// <param name="password">Senha (para fins de valida√ß√£o)</param>
         /// <param name="passwordHash">Hash da senha</param>
         /// <param name="openingDate">Data de abertura da conta</param>
         public Account(string name, decimal overdraftLimit, decimal overdraftTax, string password, string passwordHash, DateTime openingDate): this()
@@ -67,14 +67,14 @@ namespace Marren.Banking.Domain.Model
 
             if (errors.Count > 0)
             {
-                throw new BankingDomainException("Campos inv·lidos", errors.ToArray());
+                throw new BankingDomainException("Campos inv√°lidos", errors.ToArray());
             }
         }
 
         /// <summary>
-        /// ValidaÁ„o interna
+        /// Valida√ß√£o interna
         /// </summary>
-        /// <param name="errors">Erros encontrados na validaÁ„o</param>
+        /// <param name="errors">Erros encontrados na valida√ß√£o</param>
         private void Validate(IList<ValidationError> errors)
         {
             if (string.IsNullOrWhiteSpace(this.Name))
@@ -108,20 +108,20 @@ namespace Marren.Banking.Domain.Model
 
             if (this.OpeningDate > DateTime.Now)
             {
-                errors.Add(new ValidationError("Data futura n„o permitida.", "OpeningDate", "Account"));
+                errors.Add(new ValidationError("Data futura n√£o permitida.", "OpeningDate", "Account"));
             }
 
             DateTime minDate = new DateTime(2020, 3, 1);
             if (this.OpeningDate < minDate)
             {
-                errors.Add(new ValidationError($"Data mÌnima È {minDate:dd/MM/yyyy}.", "OpeningDate", "Account"));
+                errors.Add(new ValidationError($"Data m√≠nima √© {minDate:dd/MM/yyyy}.", "OpeningDate", "Account"));
             }
         }
 
         /// <summary>
         /// Valida a senha da conta.
         /// 
-        /// … est·tico porque È exposto para que possa ser usada em serviÁos.
+        /// √â est√°tico porque √© exposto para que possa ser usada em servi√ßos.
         /// </summary>
         /// <param name="password">Senha</param>
         /// <param name="errors">Lista de erros</param>
@@ -129,11 +129,11 @@ namespace Marren.Banking.Domain.Model
         {
             if (string.IsNullOrWhiteSpace(password))
             {
-                errors.Add(new ValidationError("Campo Senha inv·lido.", "Password", "Account"));
+                errors.Add(new ValidationError("Campo Senha inv√°lido.", "Password", "Account"));
             }
             else if (password.Length < 3)
             {
-                errors.Add(new ValidationError("Tamanho mÌnimo da senha È 3.", "Password", "Account"));
+                errors.Add(new ValidationError("Tamanho m√≠nimo da senha √© 3.", "Password", "Account"));
             }
         }
 
@@ -149,7 +149,7 @@ namespace Marren.Banking.Domain.Model
 
             if (errors.Count > 0)
             {
-                throw new BankingDomainException("Campos inv·lidos.", errors.ToArray());
+                throw new BankingDomainException("Campos inv√°lidos.", errors.ToArray());
             }
         }
     }

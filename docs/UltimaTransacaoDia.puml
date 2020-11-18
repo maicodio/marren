@@ -1,0 +1,18 @@
+@startuml UltimaTransacaoDia
+skinparam monochrome true
+skinparam roundcorner 10
+
+start
+:Obtém a última transação do cliente do repositório;
+while (Essa transação é de hoje) is (Não)
+:Gera transação de saldo para o dia seguinte;
+if (Dia útil bancário com redimentos/taxas?) then(Sim)
+:Gera transação de rendimentos/taxas para o dia seguinte;
+else (Não)
+endif
+:Agora a última transação gerada é a do dia seguinte;
+endwhile (Sim)
+:Retorna a última transação do dia de hoje;
+stop
+
+@enduml

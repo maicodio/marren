@@ -8,7 +8,7 @@ namespace Marren.Banking.Application.ViewModel
     public class Login
     {
         /// <summary>
-        /// Numero da conta
+        /// Número da conta
         /// </summary>
         public int AccountId { get; set; }
 

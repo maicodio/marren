@@ -7,31 +7,31 @@ using System.Threading.Tasks;
 namespace Marren.Banking.Domain.Contracts 
 {
     /// <summary>
-    /// Contrato do repositório usado pode este domínio
+    /// Contrato do repositÃ³rio usado pode este domÃ­nio
     /// </summary>
     public interface IBankingRepository
     {
         /// <summary>
-        /// Adiciona (INSERT) uma nova conta no repositório
+        /// Adiciona (INSERT) uma nova conta no repositÃ³rio
         /// </summary>
         /// <param name="account">Dados da conta</param>
         /// <returns>Async</returns>
         Task AddAccount(Account account);
 
         /// <summary>
-        /// Obtém uma conta buscando pelo id e hash da senha
+        /// ObtÃ©m uma conta buscando pelo id e hash da senha
         /// </summary>
-        /// <param name="accountId">número da conta</param>
+        /// <param name="accountId">nÃºmero da conta</param>
         /// <param name="passwordHash">hash da senha</param>
         /// <returns>Asyncronamente, retorna null ou a conta encontrada</returns>
         Task<Account> GetAccountByIdAndHash(int accountId, string passwordHash);
 
         /// <summary>
-        /// Obtém uma conta por id.
-        /// Usada para obter informações de taxas e limites 
+        /// ObtÃ©m uma conta por id.
+        /// Usada para obter informaÃ§Ãµes de taxas e limites 
         /// ao realizar saques.
         /// </summary>
-        /// <param name="accountId">número da conta</param>
+        /// <param name="accountId">nÃºmero da conta</param>
         /// <returns>Asyncronamente, retorna null ou a conta encontrada</returns>
         Task<Account> GetAccountById(int accountId);
 
@@ -43,24 +43,24 @@ namespace Marren.Banking.Domain.Contracts
         Task AddTransaction(Transaction transaction);
 
         /// <summary>
-        /// Obtém a última transação da conta
-        /// É a transação que contém o saldo da conta atual 
+        /// ObtÃ©m a Ãºltima transaÃ§Ã£o da conta
+        /// Ã‰ a transaÃ§Ã£o que contÃ©m o saldo da conta atual 
         /// </summary>
-        /// <param name="accountId">número da conta</param>
-        /// <returns>Asyncronamente, retorna null ou a transação encontrada</returns>
+        /// <param name="accountId">nÃºmero da conta</param>
+        /// <returns>Asyncronamente, retorna null ou a transaÃ§Ã£o encontrada</returns>
         Task<Transaction> GetLastTransaction(int accountId);
 
         /// <summary>
-        /// Obtém as transações de uma conta, por período
+        /// ObtÃ©m as transaÃ§Ãµes de uma conta, por perÃ­odo
         /// </summary>
-        /// <param name="accountId">número da conta</param>
+        /// <param name="accountId">nÃºmero da conta</param>
         /// <param name="init">data inicio</param>
         /// <param name="end">data fim</param>
-        /// <returns>Asyncronamente as transações encontradas</returns>
+        /// <returns>Asyncronamente as transaÃ§Ãµes encontradas</returns>
         Task<IEnumerable<Transaction>> GetTransactions(int accountId, DateTime init, DateTime? end);
 
         /// <summary>
-        /// Salva as alterações até agora realizadas.
+        /// Salva as alteraÃ§Ãµes atÃ© agora realizadas.
         /// Conceiro de UnitOfWork.
         /// </summary>
         /// <returns>Async</returns>
