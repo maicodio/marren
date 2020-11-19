@@ -186,7 +186,7 @@ O site simula um chatbot que permite ao cliente acessar sua conta corrente usand
 
 ![Entidades, Contratos e Serviços do domínio](docs/Frontend.PNG)
 
-A autenticação foi realizada configurando o token no header das requisições autenticadas, como neste exemplo:
+As chamadas aos métodos que necessitam autenticação são realizadas configurando o token no header da requisição, como neste exemplo:
 
 ```js
 const requestOptions = {
@@ -203,7 +203,7 @@ const response = await fetch('BankingAccount/' + method, requestOptions);
 
 ## Testes
 
-Foram desenvolvidas as classes de teste:
+Foram desenvolvidas as seguintes classes de teste:
 
 * ***Marren.Banking.Tests.DomainTests.AccountServiceTests*** - Teste das classes de domínio com infra estrutura "dummy" para facilitar os testes onde ocorrem cálculos.
 * ***Marren.Banking.Tests.InfrastructureTests.InfrastructureTests*** - Testes integrados com os serviços de infraestrutura. Um banco de dados SQLite é gerado todo novo teste iniciado.
