@@ -140,7 +140,8 @@ Métodos:
 A infrastrutura é composta dos serviços:
 
 * ***Marren.Banking.Infrastructure.Contexts.BankingAccountRepository*** - Repositório EntityFramework em SQLite.
-* ***Marren.Banking.Infrastructure.Services.FinanceService*** - Serviço de busca da taxa SELIC no WebService do BACEN
+* ***Marren.Banking.Infrastructure.Services.FinanceService*** - Serviço que consome o WebService do BACEN e retorna os dias bancários e suas taxas.
+    * A taxa utilizada é a taxa Selic
     * O serviço retorna JSON com datas e taxas do período
     * O serviço não trás as datas que não são dias úteis bancários.
 * ***Marren.Banking.Infrastructure.Services.AuthService*** - Serviço de geração de hash de senha
@@ -184,7 +185,7 @@ Um frontend simplificado foi construído usando reactjs para testar a viabilidad
 
 O site simula um chatbot que permite ao cliente acessar sua conta corrente usando o próprio chat.
 
-![Entidades, Contratos e Serviços do domínio](docs/Frontend.PNG)
+![ChatBot do Marren](docs/Frontend.PNG)
 
 As chamadas aos métodos que necessitam autenticação são realizadas configurando o token no header da requisição, como neste exemplo:
 
@@ -247,6 +248,7 @@ dotnet test Marren.Banking.Tests/Marren.Banking.Tests.csproj
 
 ## Referências
 
+* Webservice da Taxa Selic: https://dadosabertos.bcb.gov.br/dataset/11-taxa-de-juros---selic
 * Autenticação Bearer: https://balta.io/blog/aspnetcore-3-autenticacao-autorizacao-bearer-jwt
 * Limitações do EF com SQLite: https://docs.microsoft.com/pt-br/dotnet/standard/data/sqlite/async
 * Uma aplicação em DDD com .net muito complexa: https://github.com/dotnet-architecture/eShopOnContainers/tree/master/src/Services/Ordering/Ordering.API
