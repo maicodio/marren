@@ -148,11 +148,12 @@ A infrastrutura é composta dos serviços:
     * Gera o TOKEN JWT para a aplicação
     * Armazena a chave privada para o JWT.
 
-## Aplicação
+## Aplicação Marren.Banking.Application
 
-A aplicação integra todos os compententes do domínio com os da infraestrutura, adicionando a eles uma camada de autenticação JWT. A API REST expõe o serviço do AccountService.
+A aplicação é um site ASP.NET que integra todos os componentes do domínio com os da infraestrutura, adicionando a eles uma camada de autenticação JWT. 
+A API REST que expõe o serviço do AccountService está implementada na *Controller* BankingAccountController.
 
-O cliente deve usar a autenticação *Bearer* no cabeçalho HTTP usando um token obtido numa autenticação prévia. Para identificar o cliente logado foi criada a *claim* "marren_account_id".
+O cliente deve usar a autenticação *Bearer* no cabeçalho HTTP usando um token obtido numa autenticação prévia, no método Authenticate desta *controller*. Para identificar o cliente logado foi criada a *claim* "marren_account_id".
 
 Exemplo de código explicado:
 ```csharp
@@ -177,7 +178,6 @@ Exemplo de código explicado:
 
 Para cada operação do AccountService foi criado um ViewModel específico contendo os parâmetros das operações disponíveis no AccountService. Nenhuma validação é realizado na Aplicação, sendo essa tarefa exclusiva do domínio.
 
-
 ## Frontend
 
 Um frontend simplificado foi construído usando reactjs para testar a viabilidade da solução.
@@ -185,6 +185,21 @@ Um frontend simplificado foi construído usando reactjs para testar a viabilidad
 O site simula um chatbot que permite ao cliente acessar sua conta corrente usando o próprio chat.
 
 ![Entidades, Contratos e Serviços do domínio](docs/FrontEnd.png)
+
+A autenticação foi realizada configurando o token no header das requisições autenticadas, como neste exemplo:
+
+```js
+const requestOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token //token obtido previamente ao chamar o método Authenticate
+    },
+    body: JSON.stringify(data)
+};
+
+const response = await fetch('BankingAccount/' + method, requestOptions);
+```
 
 ## Testes
 
