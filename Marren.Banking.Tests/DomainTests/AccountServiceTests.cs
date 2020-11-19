@@ -34,9 +34,9 @@ namespace Marren.Banking.Tests.DomainTests
             Assert.CatchAsync<BankingDomainException>(async () => await accountService.Authorize(0, null), "Validação Senha nula");
             Assert.CatchAsync<BankingDomainException>(async () => await accountService.Authorize(0, ""), "Validação Senha em branco");
             Assert.CatchAsync<BankingDomainException>(async () => await accountService.Authorize(0, "2"), "Validação Senha curta");
-            Assert.CatchAsync<BankingDomainException>(async () => await accountService.Authorize(0, "2"), "Validação Conta Inexistente");
+            Assert.CatchAsync<BankingDomainException>(async () => await accountService.Authorize(0, "2222"), "Validação Conta Inexistente");
             
-            dummyRepo.GetAccountByIdAndHashResult = new Account("Teste", 100, 100, "aaa", "aaa", DateTime.Today);
+            dummyRepo.GetAccountByIdAndHashResult = new Account("Teste", 100, 0.1m, "aaa", "aaa", DateTime.Today);
             Assert.DoesNotThrowAsync(async () => await accountService.Authorize(0, "AAAA"), "Senha Sucesso");
         }
 
@@ -50,9 +50,9 @@ namespace Marren.Banking.Tests.DomainTests
             var dummyRepo = new DummyBankingRepository();
             var accountService = new AccountService(dummyRepo, new DummyFinanceService(), new AuthService());
 
-            Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount(null, -10, -10, null, DateTime.MinValue, -10), "Validação Campos Inválidos");
-            Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount("Maico", -10, -10, null, DateTime.MinValue, -10), "Validação Campos Inválidos");
-            Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount("Maico", 0, -10, null, DateTime.MinValue, -10), "Validação Campos Inválidos");
+            Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount(null, -10, -1, null, DateTime.MinValue, -10), "Validação Campos Inválidos");
+            Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount("Maico", -10, -1, null, DateTime.MinValue, -10), "Validação Campos Inválidos");
+            Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount("Maico", 0, -1, null, DateTime.MinValue, -10), "Validação Campos Inválidos");
             Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount("Maico", 0, 0, null, DateTime.MinValue, -10), "Validação Campos Inválidos");
             Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount("Maico", 0, 0, "", DateTime.MinValue, -10), "Validação Campos Inválidos");
             Assert.CatchAsync<BankingDomainException>(async () => await accountService.OpenAccount("Maico", 0, 0, "a", DateTime.MinValue, -10), "Validação Campos Inválidos");

@@ -61,6 +61,12 @@ export class Withdraw extends Component {
     }
   }
 
+  async handleKeyPressPassword(event) {
+    if(event.key === 'Enter'){
+      await this.login();
+    }
+  }
+
   render() {
 
     if (this.state.loading) {
@@ -68,7 +74,9 @@ export class Withdraw extends Component {
     }
 
     if (this.state.cancelado) {
-      return (<div>Saque cancelado.</div>)   
+      return this.props.action != 'transfer' ? 
+       (<div>Saque cancelado.</div>):
+       (<div>Transferência cancelada.</div>)   
     }
 
     if (this.state.error) {
@@ -87,7 +95,8 @@ export class Withdraw extends Component {
             value={this.state.password ?? ''}
             onFocus={e => e.target.select()}
             placeholder="Senha"
-            onChange={e => this.changeLoginPassword(e.target.value)} />
+            onChange={e => this.changeLoginPassword(e.target.value)}
+            onKeyPress={e => this.handleKeyPressPassword(e)} />
           {this.state.error ? <FormFeedback>{this.state.error}</FormFeedback> : null}
         </InputGroup>
         <br/>

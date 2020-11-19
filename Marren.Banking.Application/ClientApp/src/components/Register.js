@@ -53,7 +53,18 @@ export class Register extends Component {
   }
 
   async register() {
+
     const register = this.state.register;
+
+    const openingDate = register.openingDate.trim();
+
+    if (!/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/g.test(openingDate)) {
+      register.errors = register.errors ?? { };
+      register.errors.OpeningDate = 'Data inválida.';
+      this.setState({register});
+      return;
+    }
+
     register.errors = null;
     this.setState({register});
     const result = await session.createAccount(

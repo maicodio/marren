@@ -96,9 +96,9 @@ namespace Marren.Banking.Domain.Model
                 errors.Add(new ValidationError("Valor deve estar entre  e 1000000000.", "OverdraftLimit", "Account"));
             }
 
-            if (this.OverdraftTax < 0 || this.OverdraftTax > 100)
+            if (this.OverdraftTax < 0 || this.OverdraftTax > 1)
             {
-                errors.Add(new ValidationError("Valor deve estar entre 0 e 100.", "OverdraftTax", "Account"));
+                errors.Add(new ValidationError("Valor deve estar entre 0 e 1.", "OverdraftTax", "Account"));
             }
 
             if (string.IsNullOrWhiteSpace(this.PasswordHash))

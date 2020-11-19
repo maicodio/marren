@@ -1,34 +1,34 @@
 # Marren
-Exemplo de aplicação de conta corrente usando arquitetura DDD (Domain Driven Design) e EntityFramework, ASP.NET core e reactjs. O nome Marren é um trocadilho com o nome do autor **M**aico e a fintech de investimentos **W**arren.
+Este é um exemplo de aplicação de conta corrente usando arquitetura DDD (Domain Driven Design) e EntityFramework, ASP.NET core e reactjs. O nome Marren é um trocadilho com o nome do autor **M**aico e a fintech de investimentos **W**arren.
 
 Uma versão funcional da aplicação pode ser encontrada em:
 http://marren.feitoria.com
 
 ## Domínio
 
-Um sistema de controle de conta corrente bancária, processando solicitações de depósito, resgates e pagamentos\*. Possibilitar a rentabilidade o dinheiro parado em conta de um dia para o outro (dias úteis) como uma conta corrente remunerada. Possibilidade de dispor de limite de cheque especial e cobrança de taxas sobre a utilização desse limite. O acesso a conta deve ser autorizado por senha.
+Um sistema de controle de conta corrente bancária, processando solicitações de depósito, resgates e pagamentos\*. Possibilita a rentabilidade o dinheiro parado em conta de um dia para o outro (dias úteis) como uma conta corrente remunerada. Dispõe de limite de cheque especial e cobrança de taxas sobre a utilização desse limite. O acesso a conta deve ser autorizado por senha.
 
-\* *Como "pagamentos" foi entendido transferência entre contas, já que um mesmo cliente pode ter mais de uma conta, pode transferir entre suas contas, não necessariamente fazendo um pagamento.*
+\* *Como "pagamentos" se entende transferência entre contas, já que um mesmo cliente pode ter mais de uma conta, pode transferir entre suas contas, não necessariamente fazendo um pagamento.*
 
 ### Glossário
 
 * ***Account*** - Conta Corrente com nome e senha que possui um saldo e movimentações.
 * ***Transaction*** - Uma transação referente a uma Conta Corrente - Account.
-* ***OverdraftLimit*** - O limite do cheque especial de uma conta
+* ***OverdraftLimit*** - O limite do cheque especial de uma conta.
 * ***OverdraftTax*** - A taxa diária cobrada sobre o limite do cheque especial utilizado de uma conta.
 * ***Balance*** - O saldo de uma conta corrente.
 * ***Withdraw*** - Operação de saque de uma conta.
 * ***Deposit*** - Operação de depósito de uma conta.
 * ***Tranfer*** - Transferência ente contas.
 * ***Statment*** - Extrato dos movimentos de uma conta.
-* ***Interest*** - Rendimentos da conta do cliente
-* ***Fees*** - Taxas por uso do limite do cheque especial
+* ***Interest*** - Rendimentos da conta do cliente.
+* ***Fees*** - Taxas por uso do limite do cheque especial.
 
 ### Entidades, Contratos e Serviços do domínio
 **Entidades**:
 
 * ***Account*** - Representa a conta do cliente sim si.
-    * ***Name*** - Nome deve ter entre 1 e 50 caracteres
+    * ***Name*** - Nome do títular, deve ter entre 1 e 50 caracteres
     * ***OverdraftLimit*** - Limite do cheque especial deve estar entre 0 e 1000000000
     * ***OverdraftTax*** - A taxa do cheque especial deve estar entre 0 e 1 (Lembrando que a taxa é diária)
     * ***PasswordHash*** - O hash da senha é obrigatório
@@ -37,9 +37,9 @@ Um sistema de controle de conta corrente bancária, processando solicitações d
     * ***Account*** - A conta corrente da transação, obrigatória.
     * ***Date*** - Data da transação não pode ser futura (Sistema não prevê agendamentos.)
     * ***Type*** - Tipo de transação, é obrigatório e deve ser um tipo válido.
-    * ***Value*** - Valor - será sempre arredondado em duas casas automaticamente, pode ser zero.
-    * ***Balance*** - Saldo - será sempre arredondado em duas casas automaticamente, pode ser zero.
-    * ***Reference*** - Referência, indica uma observação sobre a transação. Usado na transferência entre contas para indicar a origem e destino da transferencia.
+    * ***Value*** - Valor - será sempre arredondado em duas casas automaticamente, pode ser zero ou número negativo.
+    * ***Balance*** - Saldo - será sempre arredondado em duas casas automaticamente, pode ser zero ou negativo.
+    * ***Reference*** - Referência, indica uma observação sobre a transação. Usado na transferência entre contas para indicar a origem e destino da transferência.
 * ***TransactionType*** - Tipos de transações possíveis.
     * Opening - Transação de marcação da abertura da conta.
     * Balance - Transação para registro de saldo.
@@ -47,8 +47,8 @@ Um sistema de controle de conta corrente bancária, processando solicitações d
     * Deposit - Transação de depósito.
     * Interest - Transação de Rendimentos.
     * Fees - Transação de Taxas de uso do cheque especial.
-    * TransferOut - Transferencia enviada para outra conta.
-    * TransferIn - Transferencia recebida de outra conta.
+    * TransferOut - Transferência enviada para outra conta.
+    * TransferIn - Transferência recebida de outra conta.
 
 **Operações com entidades:**
 
@@ -73,10 +73,10 @@ Um sistema de controle de conta corrente bancária, processando solicitações d
         * Taxa de Juros deve ser maior ou igual a zero.
         * Taxa do Cheque especial deve ser maior ou igual a zero.
         * Gera transação de saldo para o dia seguinte.
-        * Se a taxa de juros for maior que zero:
+        * Se a taxa de juros for maior que zero (significa dia útil):
             * Gera transação de rendimento/taxas para o dia seguinte.
     * ValidateStatementFilter - Valida filtro do extrato bancário.
-        * Data ínicio não pode ser futura e não pode ser anterior a 01/03/2020.
+        * Data início não pode ser futura e não pode ser anterior a 01/03/2020.
         * Data final, se informada não pode ser anterior a inicial.
         * O período pesquisado não pode ser superior a 100 dias.
         
@@ -152,9 +152,39 @@ A infrastrutura é composta dos serviços:
 
 A aplicação integra todos os compententes do domínio com os da infraestrutura, adicionando a eles uma camada de autenticação JWT. A API REST expõe o serviço do AccountService.
 
-## Frotend
+O cliente deve usar a autenticação *Bearer* no cabeçalho HTTP usando um token obtido numa autenticação prévia. Para identificar o cliente logado foi criada a *claim* "marren_account_id".
 
-Um frontend simplificado foi construído usando reactjs.
+Exemplo de código explicado:
+```csharp
+    [HttpPost]
+    [Route("withdraw")] //rota http
+    [Authorize] //Indica que o usuário deve estar autenticado. [AllowAnonymous] permite acesso irrestrito.
+    public async Task<Result<decimal>> Withdraw([FromBody] Withdraw data)
+    {
+        try
+        {
+            //Obtém-se o ID do cliente da Claim registrada durante a autenticação. Ver Marren.Banking.Intrastructure.Services.AuthService onde é realizado este registro.
+            var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+            var balance = await this.service.Withdraw(accountId, data.Ammount, data.Password);
+            return Result.Create(balance);
+        }
+        catch (BankingDomainException ex)
+        {
+            return Result.Create<decimal>(ex);
+        }
+    }
+```
+
+Para cada operação do AccountService foi criado um ViewModel específico contendo os parâmetros das operações disponíveis no AccountService. Nenhuma validação é realizado na Aplicação, sendo essa tarefa exclusiva do domínio.
+
+
+## Frontend
+
+Um frontend simplificado foi construído usando reactjs para testar a viabilidade da solução.
+
+O site simula um chatbot que permite ao cliente acessar sua conta corrente usando o próprio chat.
+
+![Entidades, Contratos e Serviços do domínio](docs/FrontEnd.png)
 
 ## Testes
 
@@ -162,11 +192,23 @@ Foram desenvolvidas as classes de teste:
 
 * ***Marren.Banking.Tests.DomainTests.AccountServiceTests*** - Teste das classes de domínio com infra estrutura "dummy" para facilitar os testes onde ocorrem cálculos.
 * ***Marren.Banking.Tests.InfrastructureTests.InfrastructureTests*** - Testes integrados com os serviços de infraestrutura. Um banco de dados SQLite é gerado todo novo teste iniciado.
+    * Um teste de concorrência foi retirado porque o SQLite não suporta bem o uso de threads e async.
 
-## Conclusão
 
+## Melhoria continua e próximos passos
 
+* Migrar para o MySQL ou outro banco de dados mais robusto que o SQLite.
+    * O package https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/ parece estar bem maduro e seria interessante testá-lo.
+* Verificar a línguagem ubíqua utilizada, os termos em inglês podem não representar corretamente o significado que se quer obter.
+* Compatibilizar os erros de validação do domínio com os erros de ViewModel na aplicação ASP.NET
+* Desenvolver um frontend baseado em pesquisa com usuários.
+* PIX? :sweat_smile: 
+
+## Configuração de ambiente
 
 ## Referências
 
+* Autenticação Bearer: https://balta.io/blog/aspnetcore-3-autenticacao-autorizacao-bearer-jwt
+* Limitações do EF com SQLite: https://docs.microsoft.com/pt-br/dotnet/standard/data/sqlite/async
+* Uma aplicação em DDD com .net muito complexa: https://github.com/dotnet-architecture/eShopOnContainers/tree/master/src/Services/Ordering/Ordering.API
 

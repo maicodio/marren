@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { Button, FormFeedback, Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 import session from './Session';
 
@@ -7,6 +8,7 @@ export class Login extends Component {
 
   constructor(props) {
     super(props);
+    this.pwdRef = React.createRef();
     this.state = {
       login: { accountId: localStorage.getItem('account_id'), password: '', errors: null },
       cancelado: false,
@@ -26,6 +28,18 @@ export class Login extends Component {
     const login = this.state.login;
     login.password = value;
     this.setState({ login: login });
+  }
+
+  async handleKeyPressPassword(event) {
+    if(event.key === 'Enter'){
+      await this.login();
+    }
+  }
+
+  async handleKeyPressAccountId(event) {
+    if (event.key === 'Enter') {
+      ReactDOM.findDOMNode(this.pwdRef.current).focus();
+    }
   }
 
   async login() {
@@ -85,7 +99,8 @@ export class Login extends Component {
             value={this.state.login.accountId ?? ''}
             onFocus={e => e.target.select()}
             placeholder="Número da Conta"
-            onChange={e => this.changeLoginAccountId(e.target.value)} />
+            onChange={e => this.changeLoginAccountId(e.target.value)}
+            onKeyPress={e => this.handleKeyPressAccountId(e)} />
           {this.state.login.errors?.AccountId ? <FormFeedback>{this.state.login.errors?.AccountId}</FormFeedback> : null}
         </InputGroup>
         Informe a senha:
@@ -96,7 +111,9 @@ export class Login extends Component {
             value={this.state.login.password ?? ''}
             onFocus={e => e.target.select()}
             placeholder="Senha"
-            onChange={e => this.changeLoginPassword(e.target.value)} />
+            onChange={e => this.changeLoginPassword(e.target.value)} 
+            onKeyPress={e => this.handleKeyPressPassword(e)}
+            ref={this.pwdRef} />
           {this.state.login.errors?.Password ? <FormFeedback>{this.state.login.errors?.Password}</FormFeedback> : null}
         </InputGroup>
         <br/>

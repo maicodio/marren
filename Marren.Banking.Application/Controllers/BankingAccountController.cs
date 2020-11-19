@@ -24,7 +24,7 @@ namespace Marren.Banking.Application.Controllers
         private readonly AccountService service;
 
         /// <summary>
-        /// Construtor
+        /// Constructor
         /// </summary>
         /// <param name="context">Contexto injetado</param>
         /// <param name="financeService">Serviço financeiro injetado</param>
