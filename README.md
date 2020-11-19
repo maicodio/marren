@@ -6,7 +6,7 @@ http://marren.feitoria.com
 
 ## Domínio
 
-Um sistema de controle de conta corrente bancária, processando solicitações de depósito, resgates e pagamentos\*. Possibilita a rentabilidade o dinheiro parado em conta de um dia para o outro (dias úteis) como uma conta corrente remunerada. Dispõe de limite de cheque especial e cobrança de taxas sobre a utilização desse limite. O acesso a conta deve ser autorizado por senha.
+Um sistema de controle de conta corrente bancária, processando solicitações de depósito, resgates e pagamentos\*. Possibilita a rentabilidade do dinheiro parado em conta de um dia para o outro (dias úteis) como uma conta corrente remunerada. Dispõe de limite de cheque especial e cobrança de taxas sobre a utilização desse limite. O acesso a conta deve ser autorizado por senha.
 
 \* *Como "pagamentos" se entende transferência entre contas, já que um mesmo cliente pode ter mais de uma conta, pode transferir entre suas contas, não necessariamente fazendo um pagamento.*
 
@@ -28,7 +28,7 @@ Um sistema de controle de conta corrente bancária, processando solicitações d
 **Entidades**:
 
 * ***Account*** - Representa a conta do cliente sim si.
-    * ***Name*** - Nome do títular, deve ter entre 1 e 50 caracteres
+    * ***Name*** - Nome do titular, deve ter entre 1 e 50 caracteres
     * ***OverdraftLimit*** - Limite do cheque especial deve estar entre 0 e 1000000000
     * ***OverdraftTax*** - A taxa do cheque especial deve estar entre 0 e 1 (Lembrando que a taxa é diária)
     * ***PasswordHash*** - O hash da senha é obrigatório
