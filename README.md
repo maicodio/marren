@@ -184,7 +184,7 @@ Um frontend simplificado foi construído usando reactjs para testar a viabilidad
 
 O site simula um chatbot que permite ao cliente acessar sua conta corrente usando o próprio chat.
 
-![Entidades, Contratos e Serviços do domínio](docs/FrontEnd.png)
+![Entidades, Contratos e Serviços do domínio](docs/Frontend.PNG)
 
 A autenticação foi realizada configurando o token no header das requisições autenticadas, como neste exemplo:
 
