@@ -142,8 +142,8 @@ A infrastrutura é composta dos serviços:
 * ***Marren.Banking.Infrastructure.Contexts.BankingAccountRepository*** - Repositório EntityFramework em SQLite.
 * ***Marren.Banking.Infrastructure.Services.FinanceService*** - Serviço que consome o WebService do BACEN e retorna os dias bancários e suas taxas.
     * A taxa utilizada é a taxa Selic
-    * O serviço retorna JSON com datas e taxas do período
-    * O serviço não trás as datas que não são dias úteis bancários.
+    * O WebService retorna JSON com datas e taxas do período e os dias não bancários são ignorados.
+    * O serviço converte o JSON para um dicionário de datas e taxas.
 * ***Marren.Banking.Infrastructure.Services.AuthService*** - Serviço de geração de hash de senha
     * Gera o HASH em SHA256
     * Gera o TOKEN JWT para a aplicação
