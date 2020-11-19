@@ -221,6 +221,30 @@ Foram desenvolvidas as classes de teste:
 
 ## Configuração de ambiente
 
+### Requisitos:
+
+* dotnet core sdk 3.1 
+    * É possível usar o dotnet 5.0, basta trocar ```<TargetFramework>netcoreapp3.1</TargetFramework>``` por ```<TargetFramework>net5.0</TargetFramework>``` em todos os projetos.
+* git
+
+### Instalação:
+
+```bash
+git clone https://github.com/maicodio/marren.git
+
+dotnet restore
+dotnet build Marren.sln
+dotnet run --project Marren.Banking.Application/Marren.Banking.Application.csproj 
+
+```
+Acessar o site em http://localhost:5000
+
+Para executar os testes:
+```bash
+dotnet test Marren.Banking.Tests/Marren.Banking.Tests.csproj 
+```
+
+
 ## Referências
 
 * Autenticação Bearer: https://balta.io/blog/aspnetcore-3-autenticacao-autorizacao-bearer-jwt
