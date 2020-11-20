@@ -50,9 +50,9 @@ export class Login extends Component {
     
     if (!result.ok) {
       const errors = {};
-      if (result.validationErrors && result.validationErrors.length) {
-        result.validationErrors.forEach(x=>{
-          errors[x.id] = x.message;
+        if (result.errors && result.errors.length) {
+            result.errors.forEach(x => {
+            errors[x.id] = x.message;
         });
         login.errors = errors;
         this.setState({login, loading: false});
