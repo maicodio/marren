@@ -89,7 +89,7 @@ export class Register extends Component {
       }
     }
 
-    this.setState({ accountId: result.data.id});
+      this.setState({ accountId: result.data.accountId });
   }
 
   render() {

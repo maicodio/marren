@@ -216,7 +216,7 @@ Foram desenvolvidas as seguintes classes de teste:
 * Migrar para o MySQL ou outro banco de dados mais robusto que o SQLite.
     * O package https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql/ parece estar bem maduro e seria interessante testá-lo.
 * Verificar a línguagem ubíqua utilizada, os termos em inglês podem não representar corretamente o significado que se quer obter.
-* Compatibilizar os erros de validação do domínio com os erros de ViewModel na aplicação ASP.NET
+* Compatibilizar os erros de validação do domínio com os erros de ViewModel na aplicação ASP.NET, utilizando ActionResult nos retornos dos métodos.
 * Desenvolver um frontend baseado em pesquisa com usuários.
 * PIX? :sweat_smile: 
 

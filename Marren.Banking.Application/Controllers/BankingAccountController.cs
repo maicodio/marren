@@ -38,35 +38,44 @@ namespace Marren.Banking.Application.Controllers
             this.service = new AccountService(new BankingAccountRepository(context), financeService, authService);
         }
 
-
+        /// <summary>
+        /// Autoriza a conta corrente com id e senha, gerando o token
+        /// </summary>
+        /// <param name="login">id e senha</param>
+        /// <returns>Token e dados da conta</returns>
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> Authenticate([FromBody] Login login)
+        public async Task<Result<AccountToken>> Authenticate([FromBody] Login login)
         {
             try
             {
                 var account = await this.service.Authorize(login.AccountId, login.Password);
                 var token = AuthService.GenerateToken(account);
 
-                return Result.Create<dynamic>(
-                    new {
-                        Ok = true,
-                        account.Name,
-                        account.Id,
+                return Result.Create<AccountToken>(
+                    new AccountToken()
+                    {
+                        Name = account.Name,
+                        AccountId = account.Id,
                         Token = token
                     });
             }
             catch(BankingDomainException ex)
             {
-                return Result.Create<dynamic>(ex);
+                return Result.Create<AccountToken>(ex);
             }
         }
 
+        /// <summary>
+        /// Cria nova conta corrente e já retorna a conta autenticada.
+        /// </summary>
+        /// <param name="accountData">Dados da conta</param>
+        /// <returns>Token e dados da conta</returns>
         [HttpPost]
         [Route("create")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> CreateAccount([FromBody] CreateAccount accountData)
+        public async Task<Result<AccountToken>> CreateAccount([FromBody] CreateAccount accountData)
         {
             try
             {
@@ -81,22 +90,25 @@ namespace Marren.Banking.Application.Controllers
 
                 var token = AuthService.GenerateToken(account);
 
-                return Result.Create<dynamic>(
-                   new
+                return Result.Create<AccountToken>(
+                   new AccountToken()
                    {
-                       Ok = true,
-                       account.Name,
-                       account.Id,
+                       Name = account.Name,
+                       AccountId = account.Id,
                        Token = token
                    });
             }
             catch (BankingDomainException ex)
             {
-                return Result.Create<dynamic>(ex);
+                return Result.Create<AccountToken>(ex);
             }
         }
 
-
+        /// <summary>
+        /// Obtém extrato de uma conta autenticada desde uma data
+        /// </summary>
+        /// <param name="start">Data de inicio</param>
+        /// <returns>Lista de Itens de Extrato</returns>
         [HttpPost]
         [Route("statement")]
         [Authorize]
@@ -121,6 +133,10 @@ namespace Marren.Banking.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtém o saldo da conta
+        /// </summary>
+        /// <returns>Valor do saldo</returns>
         [HttpPost]
         [Route("balance")]
         [Authorize]
@@ -138,6 +154,11 @@ namespace Marren.Banking.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Realiza saque de uma conta autenticada, mas exigindo a senha novamente.
+        /// </summary>
+        /// <param name="data">Dados do saque</param>
+        /// <returns>Valor do saldo atualizado</returns>
         [HttpPost]
         [Route("withdraw")]
         [Authorize]
@@ -155,6 +176,11 @@ namespace Marren.Banking.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Realiza transferência de uma conta autenticada para outra conta, mas exigindo a senha novamente.
+        /// </summary>
+        /// <param name="data">Dados da transferência</param>
+        /// <returns>Valor do saldo atualizado</returns>
         [HttpPost]
         [Route("transfer")]
         [Authorize]
@@ -172,6 +198,11 @@ namespace Marren.Banking.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Realiza depósito em uma conta autenticada.
+        /// </summary>
+        /// <param name="data">Dados do depósito</param>
+        /// <returns>Valor do saldo atualizado</returns>
         [HttpPost]
         [Route("deposit")]
         [Authorize]
