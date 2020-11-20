@@ -116,7 +116,7 @@ namespace Marren.Banking.Application.Controllers
         {
             try
             {
-                var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+                var accountId = AuthService.GetAccountIdClaim(User);
                 var data = await this.service.GetStatement(accountId, start.GetValueOrDefault(DateTime.Now.AddMonths(-1)), null);
 
                 return Result.Create<IEnumerable<Statement>>(data.Select(d => new Statement
@@ -144,7 +144,7 @@ namespace Marren.Banking.Application.Controllers
         {
             try
             {
-                var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+                var accountId = AuthService.GetAccountIdClaim(User);
                 var data = await this.service.GetBalance(accountId);
                 return Result.Create<decimal>(data);
             }
@@ -166,7 +166,7 @@ namespace Marren.Banking.Application.Controllers
         {
             try
             {
-                var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+                var accountId = AuthService.GetAccountIdClaim(User);
                 var balance = await this.service.Withdraw(accountId, data.Ammount, data.Password);
                 return Result.Create(balance);
             }
@@ -188,7 +188,7 @@ namespace Marren.Banking.Application.Controllers
         {
             try
             {
-                var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+                var accountId = AuthService.GetAccountIdClaim(User);
                 var balance = await this.service.Transfer(accountId, data.Ammount, data.Password, data.AccountIdDeposit);
                 return Result.Create(balance);
             }
@@ -210,7 +210,7 @@ namespace Marren.Banking.Application.Controllers
         {
             try
             {
-                var accountId = User.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+                var accountId = AuthService.GetAccountIdClaim(User);
                 var balance = await this.service.Deposit(accountId, amount);
                 return Result.Create(balance);
             }

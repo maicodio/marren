@@ -66,6 +66,16 @@ namespace Marren.Banking.Infrastructure.Services
         {
             return Encoding.ASCII.GetBytes("C636A24A-95A3-46BC-8BB9-B8ECEA9B298D");
         }
+
+        /// <summary>
+        /// Obtém o id do Account autenticada das claims do usuário
+        /// </summary>
+        /// <param name="user">Dados do usuário autenticado</param>
+        /// <returns>Account ID (zero se inválido)</returns>
+        public static int GetAccountIdClaim(ClaimsPrincipal user)
+        {
+            return user.Claims.Where(x => x.Type == "marren_account_id").Select(x => int.Parse(x.Value)).FirstOrDefault();
+        }
     }
 }
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
