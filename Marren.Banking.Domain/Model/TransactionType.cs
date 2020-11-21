@@ -43,7 +43,7 @@ namespace Marren.Banking.Domain.Model
         /// Transferência entre contas 
         /// Transação de transferência de saída da conta
         /// </summary>
-        public static TransactionType TransferOut = new TransactionType(7, "Pago para");
+        public static TransactionType TransferOut = new TransactionType(7, "Enviado para");
 
         /// <summary>
         /// Transferência entre contas
