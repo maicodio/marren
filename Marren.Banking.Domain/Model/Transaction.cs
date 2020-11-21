@@ -234,7 +234,7 @@ namespace Marren.Banking.Domain.Model
             decimal newBalanceDeposit = lastTransactionDeposit.Balance + value;
 
             lastTransactionDeposit.NextTransaction = new Transaction(
-                lastTransactionDeposit.Account, DateTime.Now, TransactionType.TransferIn, value, newBalanceDeposit, null, lastTransactionDeposit.Account.Id.ToString());
+                lastTransactionDeposit.Account, DateTime.Now, TransactionType.TransferIn, value, newBalanceDeposit, null, this.Account.Id.ToString());
 
             yield return lastTransactionDeposit.NextTransaction;
         }

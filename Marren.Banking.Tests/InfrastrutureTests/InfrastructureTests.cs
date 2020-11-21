@@ -165,7 +165,7 @@ namespace Marren.Banking.Tests.InfrastrutureTests
         /// Transferência
         /// </summary>
         [Test]
-        public void TransferenciaTests()
+        public void TransferTest()
         {
             Account account1 = null;
             Assert.DoesNotThrowAsync(async () => account1 = await this.accountService.OpenAccount("Maico 1", 90, 0.012m, "AAA", DateTime.Now, 100), "Nao conseguiu abrir conta 1");
@@ -187,12 +187,23 @@ namespace Marren.Banking.Tests.InfrastrutureTests
             Assert.CatchAsync<BankingDomainException>(async () => await this.accountService.Transfer(account1.Id, 200, "AAA", account2.Id), "Validacao do Saldo da Conta");
 
             decimal sourceBalance = 0;
-            Assert.DoesNotThrowAsync(async() => sourceBalance = await this.accountService.Transfer(account1.Id, 50, "AAA", account2.Id), "Sucesso na transferencia");
+            Assert.DoesNotThrowAsync(async() => sourceBalance = await this.accountService.Transfer(account1.Id, 50, "AAA", account2.Id), "Sucesso na transferencia falhou");
             Assert.AreEqual(sourceBalance, 50, "Saldo incorreto depois da transferencia na conta 1");
 
             decimal depositBalance = 0;
-            Assert.DoesNotThrowAsync(async () => depositBalance = await this.accountService.GetBalance(account2.Id), "Validacao do Saldo da Conta");
-            Assert.AreEqual(depositBalance, 150, "Saldo incorreto depois da transferencia na conta 2");
+            Assert.DoesNotThrowAsync(async () => depositBalance = await this.accountService.GetBalance(account2.Id), "Validação do saldo da conta falhou");
+            Assert.AreEqual(depositBalance, 150, "Saldo incorreto depois da transferência na conta 2");
+
+            Transaction trans1 = null;
+            Transaction trans2 = null;
+            Assert.DoesNotThrowAsync(async () => trans1 = await this.repository.GetLastTransaction(account1.Id), "Validação da referência - obter última transação conta 1 falhou");
+            Assert.DoesNotThrowAsync(async () => trans2 = await this.repository.GetLastTransaction(account2.Id), "Validação da referência - obter última transação conta 2 falhou");
+
+            Assert.IsNotNull(trans1, "Transação 1 nula");
+            Assert.IsNotNull(trans1, "Transação 2 nula");
+
+            Assert.AreEqual(trans1.Reference, account2.Id.ToString(), "Referência transação saida errada");
+            Assert.AreEqual(trans2.Reference, account1.Id.ToString(), "Referência transação entrada errada");
 
 
         }
