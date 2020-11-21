@@ -109,7 +109,7 @@ namespace Marren.Banking.Domain.Model
                 errors.Add(new ValidationError("Tipo de transferência não informado.", "Type", "Transaction"));
             }
 
-            if (Enumeration.GetAll<TransactionType>().Any(x => x.Id == this.Id))
+            if (!Enumeration.GetAll<TransactionType>().Any(x => x.Id == this.Type.Id))
             {
                 errors.Add(new ValidationError("Tipo de transferência inválido", "Type", "Transaction"));
             }
