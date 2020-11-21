@@ -1,5 +1,5 @@
 # Marren
-Este é um exemplo de aplicação de conta corrente usando arquitetura DDD (Domain Driven Design) usando tecnologias como o EntityFramework, ASP.NET core e reactjs. O nome Marren é um trocadilho com o nome do autor **M**aico e a fintech de investimentos **W**arren.
+Este é um exemplo de aplicação de conta corrente usando arquitetura DDD (Domain Driven Design) com tecnologias como o EntityFramework, ASP.NET core e reactjs. O nome Marren é um trocadilho com o nome do autor **M**aico e a fintech de investimentos **W**arren.
 
 Uma versão funcional da aplicação pode ser encontrada em:
 http://marren.feitoria.com
