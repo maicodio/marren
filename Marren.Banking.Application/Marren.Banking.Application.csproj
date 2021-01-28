@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marren.Banking.Domain\Marren.Banking.Domain.csproj" />
-    <ProjectReference Include="..\MArren.Banking.Infrastructure\Marren.Banking.Infrastructure.csproj" />
+    <ProjectReference Include="..\Marren.Banking.Infrastructure\Marren.Banking.Infrastructure.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
