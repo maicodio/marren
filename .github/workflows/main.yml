@@ -1,0 +1,62 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  MYSQL_HOST: "127.0.0.1"
+  MYSQL_USER: "root"
+  MYSQL_PASS: "123456"
+  
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: "123456"
+        ports:
+          - "3306:3306"
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+      
+      - name: Verify MySQL connection from container
+        run: |
+          # apt-get update
+          # apt-get install -y mysql-client
+          mysql --host $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "SHOW DATABASES"
+
+      - name: Configure database user
+        run: |
+          mysql --host $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "DROP USER IF EXISTS 'marren'@'%'; CREATE USER 'marren'@'%' IDENTIFIED BY 'Marren123!';"
+          mysql --host $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "GRANT ALL PRIVILEGES ON * . * TO 'marren'@'%';"
+      - name: Configure settings
+        run: |
+          mysql --host $MYSQL_HOST -u$MYSQL_USER -p$MYSQL_PASS -e "SET GLOBAL max_connections = 1000; SET GLOBAL max_user_connections = 1000;"
+      - name: Install dependencies
+        run: dotnet restore Marren.Banking.Tests/Marren.Banking.Tests.csproj
+      - name: Build
+        run: dotnet build --no-restore --configuration Release Marren.Banking.Tests/Marren.Banking.Tests.csproj
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal Marren.Banking.Tests/Marren.Banking.Tests.csproj
