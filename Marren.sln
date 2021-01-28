@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marren.Banking.Domain", "Marren.Banking.Domain\Marren.Banking.Domain.csproj", "{51000E20-D892-4B2F-B4DA-46F43F095C85}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marren.Banking.Infrastructure", "MArren.Banking.Infrastructure\Marren.Banking.Infrastructure.csproj", "{A954C34A-9C4D-40D4-9ED7-896EF1CA9024}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marren.Banking.Infrastructure", "Marren.Banking.Infrastructure\Marren.Banking.Infrastructure.csproj", "{A954C34A-9C4D-40D4-9ED7-896EF1CA9024}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marren.Banking.Tests", "Marren.Banking.Tests\Marren.Banking.Tests.csproj", "{DA9BD668-6AD3-4AB9-868A-D29E1A396F6F}"
 EndProject
